@@ -1,0 +1,10 @@
+.logo {
+    font-weight: 800;
+    color: var(--primary-color);
+    display: flex;
+    align-items: flex-end;
+}
+
+.logo img {
+    padding-right: 8px;
+}

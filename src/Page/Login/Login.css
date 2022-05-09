@@ -1,0 +1,76 @@
+.login {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.login-logo {
+    margin-bottom: 43px;
+    font-size: 36px;
+}
+
+.logo-span {
+    line-height: 48px;
+}
+
+.login-form {
+    background-color: white;
+    width: 408px;
+    height: 384px;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    justify-content: space-between;
+    border-radius: 8px;
+    box-shadow: 0px 8px 40px rgba(0, 0, 0, 0.15);
+}
+
+.login-form h2 {
+    text-align: center;
+    margin: 0;
+    font-weight: 700;
+}
+
+.login-text label {
+    color: #B3B3B3;
+    font-size: 14px;
+}
+
+.login-text input {
+    width: 100%;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+}
+
+.login-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.login-fogot-pasword {
+    color: #1890FF;
+    margin: 0;
+    cursor: pointer;;
+}
+
+.login-submit {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
+    border-radius: 8px;
+    border: none;
+}
+
+.login-submit:hover {
+    background-color: #f99933;
+}
+
+.login-submit:active {
+    background-color: #f7860d;
+}
