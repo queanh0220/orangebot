@@ -1,0 +1,34 @@
+.sidebar-item {
+    font-size: 14px;
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+}
+
+.sidebar-item.active, .sidebar-item:hover {
+    background-color: #f0f0f0;
+    position: relative;
+}
+
+.side-item-text {
+    margin: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.active > .active-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 8px;
+    background-color: var(--primary-color);
+}
+
+.hidden {
+    display: none;
+}
+
+.sidebar-hidden {
+    margin: auto;
+}

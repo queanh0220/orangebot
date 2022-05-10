@@ -4,10 +4,11 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding-bottom: 24px;
 }
 
 .login-logo {
-    margin-bottom: 43px;
+    margin-bottom: 40px;
     font-size: 36px;
 }
 
@@ -31,25 +32,32 @@
     text-align: center;
     margin: 0;
     font-weight: 700;
+    font-size: 24px;
 }
 
 .login-text label {
     color: #B3B3B3;
     font-size: 14px;
-}
-
-.login-text input {
-    width: 100%;
-    padding: 8px 12px;
-    box-sizing: border-box;
-    border: 1px solid #D9D9D9;
-    border-radius: 2px;
+    margin-bottom: 8px;
+    display: inline-block;
 }
 
 .login-option {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.login-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.login-checkbox input {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
 }
 
 .login-fogot-pasword {

@@ -8,3 +8,8 @@
 .logo img {
     padding-right: 8px;
 }
+
+.logo span {
+    white-space: nowrap;
+    overflow: hidden;
+}

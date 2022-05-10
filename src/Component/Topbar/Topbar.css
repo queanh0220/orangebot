@@ -1,0 +1,52 @@
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background-color: white;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.topbar-left-text {
+    font-size: 24px;
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+.topbar-right {
+    display: flex;
+}
+
+.topbar-right-label {
+    font-style: 16px;
+    font-weight: 900;
+    font-family: 'Roboto', sans-serif;
+    color: #BFBFBF;
+    margin-right: 8px;
+    align-self: center;
+}
+
+.topbar-right-input, .topbar-right-icon {
+    padding: 8px 12px;
+    border: 1px solid #D9D9D9;
+}
+
+.topbar-right-input {
+    width: 200px;
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+.topbar-right-icon { 
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
+    cursor: pointer;
+}
+

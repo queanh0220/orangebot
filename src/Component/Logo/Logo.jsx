@@ -6,7 +6,7 @@ export default function Logo(props) {
       <>
     <div className={"logo "+props.className}>
       <img src={logo} alt="Logo" />
-      <span>Orange Bot</span>
+      {props.show && <span>Orange Bot</span>}
     </div>
     </>
   );

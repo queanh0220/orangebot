@@ -1,0 +1,153 @@
+.profile-content {
+    padding: 60px 40px;
+    display: flex;
+    overflow: auto; 
+}
+
+.profile-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    margin-right: 24px;
+    text-align: center;
+    width: 256px;
+}
+
+.profile-left-img {
+    width: 128px;
+    height: 128px;
+    overflow: hidden;
+    border-radius: 50%;
+    position: relative;
+    margin: 16px 16px 0;
+}
+
+.profile-left-img img {
+    width: inherit;
+}
+
+.profile-left-img label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary-color);
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.profile-left-img label:hover {
+    filter: brightness(90%);
+}
+
+.profile-left-text * {
+    margin: 4px 0;
+    font-weight: 400;
+}
+
+.profile-left-text input {
+    width: 128px;
+    padding: 4px 8px 4px 4px;
+    font-size: 14px;
+}
+
+.profile-btn {
+    margin-top:50px;
+}
+
+.profile-btn button {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    border-radius: 2px;
+}
+
+.profile-btn button:hover {
+    filter: brightness(95%);
+}
+
+.profile-btn button:active {
+    filter: brightness(90%);
+    color: rgb(165, 165, 255);
+}
+
+.profile-btn-text {
+    margin-left: 4px;
+}
+
+.profile-cancel-edit {
+    color: red;
+    margin-right: 24px;
+    cursor: pointer;
+}
+
+.profile-cancel-edit:hover {
+    color: rgb(230, 0, 0);   
+}
+
+.profile-cancel-edit:active {
+    color: rgb(165, 165, 255);
+}
+
+
+/* right */
+
+.profile-right {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.profile-right-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.profile-right-item {
+    margin-top: 24px;
+}
+
+.profile-right-item label {
+    font-weight: 900;
+    color: #BFBFBF;
+}
+
+.profile-right-input {
+    position: relative;
+    margin-top: 8px;
+}
+
+.profile-right-item input {
+    padding: 5px 12px;
+}
+
+.profile-right-icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 38px;
+    background-color: #FAFAFA;
+    border: 1px solid #D9D9D9;
+}
+
+.profile-right-icon svg {
+    height: 100%;
+}
+
+.profile-right-input.password {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.profile-btn-right {
+    display: flex;
+    justify-content: end;
+    margin-top: auto;
+}
+

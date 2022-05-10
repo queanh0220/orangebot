@@ -9,7 +9,7 @@ export default function Login() {
     const navigate = useNavigate();
     const handleSubmit = (e) => {
         e.preventDefault();
-        navigate("/home");
+        navigate("/home/profile");
     }
   return (
     <div className="login">
