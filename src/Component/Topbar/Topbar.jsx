@@ -9,6 +9,7 @@ export default function Topbar(props) {
           <span className='topbar-left-text'>{props.title}</span>
         </div>
         <div className="topbar-right">
+          {props.button}
           <label className='topbar-right-label'>テナント名</label>
           <input type="text" className='topbar-right-input' placeholder='テナント①'/>
           <i className="topbar-right-icon"><UserOutlined /></i>

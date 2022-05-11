@@ -13,7 +13,7 @@ export default function Login() {
     }
   return (
     <div className="login">
-        <Logo className="login-logo"/>
+        <Logo className="login-logo" show={true}/>
       <form className="login-form" action="#" method="POST">
         <h2>ログイン</h2>
         <div className="login-text">

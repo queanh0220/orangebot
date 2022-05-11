@@ -1,0 +1,19 @@
+.marketing {
+    min-width: 1000px;
+    overflow: auto;
+}
+
+.marketing-content {
+    display: flex;
+    gap: 24px;
+}
+
+.marketing-left {
+    flex: 1;
+    padding: 16px;
+}
+
+.marketing-right {
+    flex:2;
+    padding: 16px;
+}

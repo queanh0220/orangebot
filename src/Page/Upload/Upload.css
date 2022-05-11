@@ -1,8 +1,13 @@
-.upload-content {
-    padding: 60px 40px;
+.upload {
+    min-width: 1200px;
     overflow: auto;
+    
 }
 
+.upload-content {
+    max-width: 1300px;
+    margin: 0 auto;
+}
 .upload-top {
     display: flex;
     gap: 20px;
@@ -12,6 +17,7 @@
     padding: 16px;
     display: flex;
     gap: 24px;
+    align-items: center;
 }
 
 .upload-top-img {
@@ -21,22 +27,22 @@
     position: relative;
 }
 
-.upload-top-img.doc {
+.upload-icon-doc {
     background-color: #5b92ff2d;
     color: #5B93FF;
 }
 
-.upload-top-img.img {
+.upload-icon-img {
     background-color: #ffd56b3a;
     color: #FFD66B;
 }
 
-.upload-top-img.video {
+.upload-icon-video {
     background-color: #ff906b24;
     color: #FF8F6B;
 }
 
-.upload-top-img.zip {
+.upload-icon-zip {
     background-color: #9254de26;
     color: #9254DE;
 }
@@ -51,6 +57,7 @@
 
 .upload-top-text * {
     margin: 0;
+    white-space: nowrap;
 }
 
 .upload-top-text h2 {
@@ -59,9 +66,39 @@
 
 .upload-top-last {
     flex: 1;
+    flex-direction: column;
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+}
+
+.upload-top-text.top-last {
+    display: flex;
+    gap: 8px;
+}
+
+.upload-process {
+    height: 32px;
+    width: 100%;
+    background-color: #D9D9D9;
+    border-radius: 8px;
+}
+
+.upload-process-fill {
+  
+    background-color: var(--primary-color);
+    height: 32px;
+    border-radius: 8px;
 }
 
 .upload-list {
     margin-top: 24px;
+    padding: 16px 16px 0 16px;
     overflow: hidden;
 }
+
+.table-icon {
+    margin-right: 4px;
+    background-color: rgba(255, 255, 255, 0);
+}
+

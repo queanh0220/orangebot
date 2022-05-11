@@ -1,0 +1,192 @@
+.chatboxSetting {
+    min-width: 1000px;
+    overflow: auto;
+}
+
+.chatboxSetting .bg-item {
+    padding: 16px;
+}
+
+.chatboxSetting-content {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.chatboxSetting-left {
+    flex: 2;
+    margin-right: 24px;
+}
+
+.chatboxSetting-head {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chatboxSetting-head h2, .chatboxSetting-bottom h2 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.chatboxSetting-head-right span {
+    margin: 0 8px 0 24px;
+}
+
+.chatboxSetting-head-right button, .chatboxSetting-input button {
+    width: 60px;
+    height: 32px;
+   background-color: white;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    color: white;
+}
+
+.chatboxSetting-title-content {
+    padding-top: 16px;
+    border-top: 1px solid #D9D9D9;
+    display: flex;
+    align-items: center;
+}
+
+.chatboxSetting-img {
+    margin-right: 16px;
+}
+
+.chatboxSetting-box-content {
+    flex: 1;
+}
+
+.chatboxSetting-box-content p {
+    font-weight: 700;
+    color: #8C8C8C;
+}
+
+.chatboxSetting-input {
+    display: flex;
+    margin-top: 8px;
+    gap: 24px;
+}
+
+.chatboxSetting-input input, .chatboxSetting-bottom-input input {
+    padding: 4px 8px;
+}
+.chatboxSetting-input select {
+    width: 70px;
+}
+
+.chatboxSetting-chatbox {
+    margin-top: 24px;
+}
+
+.chatboxSetting-chatbox-content {
+    padding-top: 16px;
+    border-top: 1px solid #D9D9D9;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* right */
+
+.chatboxSetting-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #D9D9D9;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 10px 10px 0px 0px;
+    overflow: hidden;
+}
+
+.chatboxSetting-right-head {
+    display: flex;
+    padding: 14px;
+    background-color: #025967;
+    color: white;
+}
+
+.chatboxSetting-right-head img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.chatboxSetting-right-text {
+    flex: 1;
+}
+
+.chatboxSetting-right-text * {
+    margin: 0;
+    margin-left: 16px;
+}
+
+.chatboxSetting-right-text h3 {
+    color: white;
+    font-weight: 700;
+}
+
+.chatboxSetting-right-head button {
+    background-color: rgba(255, 255, 255, 0);
+    font-size: 24px;
+    
+    border: none;
+}
+
+.chatboxSetting-right-content {
+    flex: 1;
+}
+
+.chatboxSetting-right-foot {
+    padding: 10px;
+    background-color: #929292;
+    position: relative;
+}
+
+.chatboxSetting-right-foot input {
+    background: #F3F3F3;
+    border-radius: 10px;
+}
+
+.chatboxSetting-right-icon {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #025967;
+    cursor: pointer;
+}
+
+.chatboxSetting-right-icon:hover {
+    color: rgb(182, 182, 0);
+}
+
+.chatboxSetting-bottom {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.chatboxSetting-bottom-input {
+    display: flex;
+    gap: 16px
+}
+
+.chatboxSetting-bottom-input button {
+    padding: 0 14px;
+    min-width: fit-content;
+    border-radius: 50%;
+}
+
+.chatboxSetting-buttons {
+    width: 100%;
+    margin-top: 24px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 32px;
+}
+
+.chatboxSetting-cancel-btn {
+    color: red;
+    font-weight: 300;
+}

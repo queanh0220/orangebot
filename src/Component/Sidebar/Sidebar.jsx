@@ -3,7 +3,7 @@ import "./Sidebar.css";
 import Logo from "../Logo/Logo";
 import { Avatar } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Icon1,
   Icon2,
@@ -18,23 +18,15 @@ import SidebarItem from "../SidebarItem/SidebarItem";
 export default function Sidebar() {
   const [active, setActive] = useState(1);
   const [show, setShow] = useState(false);
-
+  const location = useLocation().pathname;
+  console.log(location)
   const navigate = useNavigate();
   const handleLogout = () => {
     navigate("/");
   };
 
   const handleNavigate = (active) => {
-    if (active === 0) return;
-    setActive(active);
-    switch (active) {
-      case 1:
-        navigate("profile");
-        break;
-      case 2:
-        navigate("upload");
-        break;
-    }
+    navigate(active)
   };
 
   return (
@@ -52,44 +44,44 @@ export default function Sidebar() {
         <SidebarItem
           text="プロファイル"
           icon={Icon1}
-          active={active === 1 ? true : false}
+          active={location === "/home/profile" ? true : false}
           show={show}
-          onClick={() => handleNavigate(1)}
+          onClick={() => handleNavigate("profile")}
         />
         <SidebarItem
           text="添付"
           icon={Icon2}
-          active={active === 2 ? true : false}
+          active={location === "/home/upload" ? true : false}
           show={show}
-          onClick={() => handleNavigate(2)}
+          onClick={() => handleNavigate("upload")}
         />
         <SidebarItem
           text="チャットボットUIの設定"
           icon={Icon3}
-          active={active === 3 ? true : false}
+          active={location === "/home/chatbox-setting" ? true : false}
           show={show}
-          onClick={() => handleNavigate(3)}
+          onClick={() => handleNavigate("chatbox-setting")}
         />
         <SidebarItem
           text="投稿の設定"
           icon={Icon4}
-          active={active === 4 ? true : false}
+          active={location === "/home/marketing" ? true : false}
           show={show}
-          onClick={() => handleNavigate(4)}
+          onClick={() => handleNavigate("marketing")}
         />
         <SidebarItem
           text="シナリオの設定"
           icon={Icon5}
-          active={active === 5 ? true : false}
+          active={location === "/home/script-setting" ? true : false}
           show={show}
-          onClick={() => handleNavigate(5)}
+          onClick={() => handleNavigate("script-setting")}
         />
         <SidebarItem
           text="集計"
           icon={Icon6}
-          active={active === 6 ? true : false}
+          active={location === "/home/all" ? true : false}
           show={show}
-          onClick={() => handleNavigate(6)}
+          onClick={() => handleNavigate("all")}
           F
         />
       </div>

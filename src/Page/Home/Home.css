@@ -5,4 +5,6 @@
 
 .home-container {
     flex: 1;
+    width: 700px;
+    overflow: auto;
 }

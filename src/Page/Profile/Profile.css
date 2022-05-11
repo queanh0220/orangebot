@@ -1,7 +1,11 @@
+.profile {
+    min-width: 700px;
+    overflow: auto;
+}
+
 .profile-content {
-    padding: 60px 40px;
     display: flex;
-    overflow: auto; 
+    justify-content: center;
 }
 
 .profile-left {
@@ -15,31 +19,9 @@
 }
 
 .profile-left-img {
-    width: 128px;
-    height: 128px;
-    overflow: hidden;
-    border-radius: 50%;
-    position: relative;
     margin: 16px 16px 0;
 }
 
-.profile-left-img img {
-    width: inherit;
-}
-
-.profile-left-img label {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background-color: var(--primary-color);
-    width: 100%;
-    text-align: center;
-    cursor: pointer;
-}
-
-.profile-left-img label:hover {
-    filter: brightness(90%);
-}
 
 .profile-left-text * {
     margin: 4px 0;
@@ -98,7 +80,7 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
-    
+    max-width: 1000px;
 }
 
 .profile-right-title {

@@ -16,6 +16,29 @@
   border: 1px solid blue !important;
 }
 
+.button {
+  background-color: var(--primary-color);
+  min-width: 147px;
+  padding: 8px 16px;
+  border-radius: 2px;
+  box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
+  color: white;
+  border: none;
+}
+
+.button:hover {
+  filter: brightness(95%);
+}
+
+.button:active {
+  filter: brightness(90%);
+}
+
+.button p {
+  display: inline;
+  margin-left: 8px;
+}
+
 .width-50 {
   width: 50%;
 }
@@ -23,4 +46,10 @@
 .bg-item {
   background-color: white;
   border-radius: 16px;
+}
+
+.main {
+  padding: 48px 40px;
+  overflow: auto; 
+  max-height: calc(100vh - 72px);
 }
