@@ -1,0 +1,32 @@
+.scenario {
+    min-width: 1000px;
+    overflow: auto;
+}
+
+.scenario-content {
+    padding: 24px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.scenario-content button {
+    margin-bottom: 24px; 
+    float: right;
+}
+
+.scenario-content button::after {
+    content: "";
+    clear: both;
+    display: none;
+}
+
+.senario-empty {
+    text-align: center;
+    margin: 15% auto;
+}
+
+.senario-empty button {
+    margin-top: 32px;
+    float: none;
+}
+

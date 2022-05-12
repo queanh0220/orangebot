@@ -53,3 +53,15 @@
   overflow: auto; 
   max-height: calc(100vh - 72px);
 }
+
+.rotate-l-45 {
+  transform: rotate(-45deg);
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+.color-g {
+  color: #999999;
+}

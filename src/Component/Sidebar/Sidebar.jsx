@@ -16,7 +16,6 @@ import toggle from "../../Svg/sidebar/toggle.svg";
 import SidebarItem from "../SidebarItem/SidebarItem";
 
 export default function Sidebar() {
-  const [active, setActive] = useState(1);
   const [show, setShow] = useState(false);
   const location = useLocation().pathname;
   console.log(location)
@@ -72,9 +71,9 @@ export default function Sidebar() {
         <SidebarItem
           text="シナリオの設定"
           icon={Icon5}
-          active={location === "/home/script-setting" ? true : false}
+          active={location === "/home/scenario" ? true : false}
           show={show}
-          onClick={() => handleNavigate("script-setting")}
+          onClick={() => handleNavigate("scenario")}
         />
         <SidebarItem
           text="集計"
