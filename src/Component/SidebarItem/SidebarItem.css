@@ -1,19 +1,24 @@
-.sidebar-item {
+.sidebar-item, .sidebar-menu-item {
     font-size: 14px;
     padding: 12px;
     cursor: pointer;
     display: flex;
 }
 
-.sidebar-item.active, .sidebar-item:hover {
+.sidebar-item.active, .sidebar-item:hover, .sidebar-menu-item:hover {
     background-color: #f0f0f0;
     position: relative;
+}
+
+.sidebar-menu-item.active {
+    color: #FA8C16;
 }
 
 .side-item-text {
     margin: 0 10px;
     white-space: nowrap;
     overflow: hidden;
+    width: 100%;
 }
 
 .active > .active-icon {
@@ -31,4 +36,12 @@
 
 .sidebar-hidden {
     margin: auto;
+}
+
+.sidebar-menu {
+    background-color: #FAFAFA;
+}
+
+.sidebar-menu-item img{
+    margin-left: 22px;
 }

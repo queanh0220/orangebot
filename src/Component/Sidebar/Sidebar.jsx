@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
 import Logo from "../Logo/Logo";
 import { Avatar } from "antd";
-import { LogoutOutlined } from "@ant-design/icons";
+import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Icon1,
@@ -17,6 +17,8 @@ import SidebarItem from "../SidebarItem/SidebarItem";
 
 export default function Sidebar() {
   const [show, setShow] = useState(false);
+  const [showmenu, setShowmenu] = useState(true);
+  const [curMenu, setCurMenu] = useState("aggregation/scenario")
   const location = useLocation().pathname;
   console.log(location)
   const navigate = useNavigate();
@@ -25,8 +27,20 @@ export default function Sidebar() {
   };
 
   const handleNavigate = (active) => {
+    if(active.includes("aggregation")){
+      setCurMenu(active);
+    } 
     navigate(active)
   };
+
+  useEffect(() => {
+    if(location.includes("aggregation")){
+      setShowmenu(true);
+    } 
+    else {
+      setShowmenu(false)
+    }
+  }, [location])
 
   return (
     <div className={"sidebar " + (show ? "" : "width-60px")}>
@@ -76,13 +90,20 @@ export default function Sidebar() {
           onClick={() => handleNavigate("scenario")}
         />
         <SidebarItem
-          text="集計"
+          text={<div className="sidebar-text-icon">
+            <span>集計</span>
+            <DownOutlined />
+          </div>}
           icon={Icon6}
-          active={location === "/home/all" ? true : false}
+          active={location.includes("/home/aggregation") ? true : false}
           show={show}
-          onClick={() => handleNavigate("all")}
-          F
-        />
+          onClick={() => handleNavigate(curMenu)} 
+          showmenu={showmenu}
+          curMenu={curMenu}
+          navigate={handleNavigate}
+        >
+       <p>sss</p>
+        </SidebarItem>
       </div>
       <div className="sidebar-footer sidebar-item">
         <Avatar src="https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg" />

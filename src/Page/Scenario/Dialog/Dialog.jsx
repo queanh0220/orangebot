@@ -4,12 +4,11 @@ import UpImg from "../../../Component/UpImg/UpImg";
 import dialogIcon from "../../../Svg/plus-puple.svg"
 import TableScenDialog from "../TableDialog/TableScenDialog";
 import "./Dialog.css"
-export default function Dialog() {
-  const [show, setShow] = useState(false);
+export default function Dialog(props) {
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => props.setShow(false);
   const handleOk = () => {};
-  const handleCancel = () => setShow(false);
+  const handleCancel = () => props.setShow(false);
 
   return (
     <Modal
@@ -18,10 +17,10 @@ export default function Dialog() {
       title={
         <>
           <img src={dialogIcon} className="dialog-icon"/> <span className="dialog-title">スクリプトを作成する</span>
-        </>
+        </> 
       }
       width={700}
-      visible={false}
+      visible={props.show}
       onOk={handleOk}
       onCancel={handleCancel}
       footer={[

@@ -6,43 +6,57 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import Tables from "../../Component/Table/Table";
 import emptyImg from "../../Svg/empty.svg";
 import Dialog from "./Dialog/Dialog";
+import BarChart from "../../Component/Chart/BarChart";
+import icon1 from "../../Svg/scenario/icon1.svg"
 export default function Scenario() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([{
+    name: {
+      icon: icon1,
+      text: "インタビュースケジュール"
+    },
+    author: "UserName",
+    date: "2022/05/25",
+    tag: [],
+  }]);
+  const [showDialog, setShowDialog] = useState(false);
+
   const columns = [
     {
       title: "シナリオ名",
       dataIndex: "name",
-      render: (file) => {
-        let Icon = <img src="" alt="" />;
+      render: (name) => {
 
         return (
           <>
-            <span className={"table-icon upload-icon-" + file.type}>
-              {Icon}
-            </span>
-            <span>{file.name}</span>
+            <img src={name.icon} alt="" />
+            <span>{name.text}</span>
           </>
         );
       },
-      width: "20%",
+      
     },
     {
       title: "作成者",
       dataIndex: "author",
-      width: "20%",
+      width: "15%",
     },
     {
       title: "作成日",
       dataIndex: "date",
-      width: "20%",
+      width: "15%",
     },
     {
       title: "タグ",
       dataIndex: "tag",
+      width: "25%"
     },
     {
       title: "Title",
       dataIndex: "title",
+      with: "15%",
+      render: () => {
+        return <a>Edit</a>
+      }
     },
   ];
   return (
@@ -57,8 +71,8 @@ export default function Scenario() {
                 <p className="color-g">
                   まだ投稿はありません。 今すぐ投稿を作成しましょう！
                 </p>
-                <button className="button">
-                <PlusCircleFilled />
+                <button className="button" onClick={()=>setShowDialog(true)}>
+                <PlusCircleFilled  />
                 <p>新しいシナリオを作成する</p>
               </button>
               </div>
@@ -66,14 +80,14 @@ export default function Scenario() {
             </>
           ) : (
             <>
-              <button className="button">
-                <PlusCircleFilled />
+              <button className="button" onClick={()=>setShowDialog(true)}>
+                <PlusCircleFilled/>
                 <p>新しいシナリオを作成する</p>
               </button>
-              <Tables columns={columns} pageSize={10} />
-              <Dialog />
+              <Tables columns={columns} data={data} pageSize={10} />
             </>
           )}
+           <Dialog show={showDialog} setShow={setShowDialog}/>
         </div>
       </div>
     </div>

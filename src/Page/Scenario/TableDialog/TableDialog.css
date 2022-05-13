@@ -4,6 +4,7 @@
     border-collapse: collapse;
     border-radius: 8px;
     background-color: #F5F5F5;
+    overflow: hidden;
 }
 
 .dialog-table tr {
@@ -21,8 +22,65 @@
     vertical-align: text-top;
 }
 
-.dialog-table input, .dialog-table select {
+.dialog-table input {
     border: 1px solid #D9D9D9;
     border-radius: 2px;
     background: #FAFAFA;
+    width: 100%;
+}
+
+.dialog-table input:focus {
+    outline: none;
+    border: 1px solid blue !important;
+  }
+
+.dialog-table select {
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    background: #FAFAFA;
+    padding: auto 0;
+}
+
+.dialog-table select:focus {
+    outline: none;
+    border: 1px solid blue !important;
+  }
+
+.table-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.table-option label {
+    color: #B3B3B3;
+    margin-right: 8px;
+}
+
+.table-border-option {
+    border-bottom:1px solid #FA8C16;
+}
+
+
+.table-input {
+    position: relative;
+    flex: 1;
+    margin-right: 8px;
+}
+
+.table-input-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.25) !important;
+}
+
+.table-CVpoint {
+    display: flex;
+    gap: 16px;
+}
+
+.table-option-padding {
+    padding: 8px 8px 0 8px !important;
 }
