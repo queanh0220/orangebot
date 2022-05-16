@@ -17,6 +17,22 @@ export default function Scenario() {
     author: "UserName",
     date: "2022/05/25",
     tag: [],
+    table: [
+      {
+        message: "",
+        control: {
+          label: "",
+          data: {
+            Option: ["", ""],
+            Datapicker: { stime: "", etime: "" },
+            Dropdown: ["", ""],
+          },
+          input: ["input: text", "input: tel", "input: email"],
+        },
+        name: "",
+        cv: false,
+      },
+    ]
   }]);
   const [showDialog, setShowDialog] = useState(false);
 

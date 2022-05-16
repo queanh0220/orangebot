@@ -76,6 +76,10 @@
     color: rgba(0, 0, 0, 0.25) !important;
 }
 
+.table-input-date::-webkit-calendar-picker-indicator { 
+    background-image: url(../../../Svg/calendar-yellow.svg);
+}
+
 .table-CVpoint {
     display: flex;
     gap: 16px;

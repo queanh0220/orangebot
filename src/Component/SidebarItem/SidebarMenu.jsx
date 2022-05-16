@@ -12,7 +12,7 @@ export default function SidebarMenu(props) {
     const [menuItem,_ ]= useState([
         {link: "aggregation/scenario", icon:[Icon7, Icon71], text: "シナリオ"},
         {link: "aggregation/dialogue", icon:[Icon8, Icon81], text: "対話履歴"},
-        {link: "aggregation/graph", icon:[Icon9, Icon91], text: "グラフ"},
+        {link: "aggregation/graph/table", icon:[Icon9, Icon91], text: "グラフ"},
         
         
       ]);

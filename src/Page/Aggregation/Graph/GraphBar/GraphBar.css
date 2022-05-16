@@ -1,0 +1,104 @@
+.grbar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.grbar-left {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 16px;
+    flex: 3;
+}
+
+.grbar-left>p, .grbar-right>p, .grbar-bottom>p {
+    font-weight: 700;
+    font-size: 18px;
+    color: black;
+    width: 100%;
+}
+
+.grbar-left-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px 24px;
+    width: 100%;
+}
+
+.grbar-left-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.grbar-left-mail {
+    text-align: center;
+    color: #BFBFBF;
+}
+
+.grbar-left-box {
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    color: white;
+    justify-content: space-between;
+}
+
+.grbar-left-icon {
+    margin: 0 20px;
+}
+
+.grbar-left-text {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+}
+
+.grbar-left-text .text {
+    text-transform: uppercase;
+}
+
+.grbar-left-text .num {
+    font-weight: 700;
+}
+
+.grbar-right {
+    flex: 2;
+    padding: 16px;
+    display: flex;flex-direction: column;
+    align-items: center;
+}
+
+.grbar-right-note {
+    display: flex;
+    margin-top: 16px;
+    gap: 24px;
+}
+
+.rgbar-note-item {
+    display: flex;
+    align-items: center;
+}
+
+.rgbar-note-item .orange, .rgbar-note-item .purple, .rgbar-note-item .pink {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: #FFA544;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+.rgbar-note-item .purple {
+background: linear-gradient(107.91deg, #EAABF0 7.37%, #4623E9 95.19%);;
+}
+
+.rgbar-note-item .pink {
+background: #FFADD2;
+
+}
+
+.grbar-bottom {
+    width: 100%;
+    padding: 16px;
+}

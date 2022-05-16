@@ -1,0 +1,42 @@
+.graph {
+    min-width: 1000px;
+    overflow: auto;
+}
+
+.graph-content {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.graph-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    align-items: center;
+}
+
+.graph-nav {
+    background-color: #F5F5F5;
+    border-radius: 30px;
+    padding: 10px 0;
+
+}
+
+.graph-link {
+    padding: 10px 20px;
+    color: #8C8C8C;
+}
+
+.graph-nav .active {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 30px;
+}
+
+.graph-date label {
+    margin-right: 8px;
+}
+
+.graph-table {
+    padding: 16px;
+}

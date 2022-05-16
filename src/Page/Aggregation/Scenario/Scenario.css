@@ -1,0 +1,47 @@
+.ag-scen {
+    min-width: 700px;
+    overflow: auto;
+}
+
+.ag-scen-content {
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0 auto;
+}
+
+.ag-scen-item {
+    padding: 16px;
+}
+
+.ag-scen-top {
+    display: flex;
+    align-items: center;
+}
+
+.ag-scen-img {
+    background-color: #D9D9D9;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+}
+
+.ag-scen-title {
+    margin-left: 16px;
+    flex: 1;
+}
+
+.ag-scen-title span {
+    font-weight: 700;
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.ag-scen-date label {
+margin-right: 8px;
+}
+
+.scenario-table {
+    margin-top: 16px;
+}
