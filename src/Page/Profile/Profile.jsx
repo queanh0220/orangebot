@@ -1,32 +1,70 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Topbar from "../../Component/Topbar/Topbar";
 import "./Profile.css";
 import person from "../../Svg/person.svg";
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import UpImg from "../../Component/UpImg/UpImg";
+import axios from "axios";
 export default function Profile() {
-
   const [info, setInfo] = useState({
     name: "本田 圭佑",
     birthday: "1985-06-13",
+    img: "",
+    email: "",
+    password: "",
   });
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
     birthday: "1985-06-13",
+    img: "",
+    email: "",
+    password: "",
   });
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isEditEmail, setIsEditEmail] = useState(false);
+  const userId = localStorage.getItem("userid");
 
+  const updateInfo = (data) => {
+    console.log(data)
+    axios
+      .put("http://localhost:4000/users/" + userId, data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const handleEditInfo = () => {
+    updateInfo(editInfo)
     setInfo(editInfo);
-    setIsEditInfo((pre) => !pre);
+    setIsEditInfo(false);
   };
 
   const handleEditAccount = () => {
+    updateInfo(editInfo);
+    setInfo(editInfo);
     setIsEditPassword(false);
     setIsEditEmail(false);
   };
+
+  const getInfo = () => {
+    axios
+      .get("http://localhost:4000/users/" + userId)
+      .then((res) => {
+        console.log(res.data)
+        setInfo({ ...info, ...res.data });
+        setEditInfo({ ...info, ...res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getInfo();
+  }, []);
 
   return (
     <div className="profile">
@@ -34,8 +72,12 @@ export default function Profile() {
       <div className="main">
         <div className="profile-content">
           <div className="profile-left bg-item">
-            <UpImg className="profile-left-img" />
-            
+            <UpImg
+              className="profile-left-img"
+              img={info.img}
+              saveImg={updateInfo}
+            />
+
             <div className="profile-left-text">
               {isEditInfo ? (
                 <div className="profile-left-edit">
@@ -45,7 +87,7 @@ export default function Profile() {
                     className="input-text"
                     value={editInfo.name}
                     onChange={(e) =>
-                      setEditInfo({ ...info, name: e.target.value })
+                      setEditInfo({ ...editInfo, name: e.target.value })
                     }
                   />
                   <input
@@ -53,7 +95,7 @@ export default function Profile() {
                     className="input-text"
                     value={editInfo.birthday}
                     onChange={(e) =>
-                      setEditInfo({ ...info, birthday: e.target.value })
+                      setEditInfo({ ...editInfo, birthday: e.target.value })
                     }
                   />
                 </div>
@@ -73,10 +115,17 @@ export default function Profile() {
                   キャンセル
                 </span>
               )}
-              <button onClick={handleEditInfo}>
-                {isEditInfo ? <SaveOutlined /> : <EditOutlined />}
-                <span className="profile-btn-text">編集</span>
-              </button>
+              {isEditInfo ? (
+                <button onClick={handleEditInfo}>
+                  <SaveOutlined />
+                  <span className="profile-btn-text">編集</span>
+                </button>
+              ) : (
+                <button onClick={() => setIsEditInfo(true)}>
+                  <EditOutlined />
+                  <span className="profile-btn-text">編集</span>
+                </button>
+              )}
             </div>
           </div>
           <div className="profile-right bg-item">
@@ -88,6 +137,10 @@ export default function Profile() {
                   type="text"
                   placeholder="example"
                   className="input-text"
+                  value={editInfo.email}
+                  onChange={(e) =>
+                    setEditInfo({ ...editInfo, email: e.target.value })
+                  }
                 />
                 <EditOutlined
                   className="profile-right-icon"
@@ -102,6 +155,10 @@ export default function Profile() {
                   type="password"
                   placeholder="......"
                   className="input-text"
+                  value={editInfo.password}
+                  onChange={(e) =>
+                    setEditInfo({ ...editInfo, password: e.target.value })
+                  }
                 />
                 {!isEditPassword && (
                   <EditOutlined
@@ -136,8 +193,9 @@ export default function Profile() {
                 >
                   キャンセル
                 </span>
+                
                 <button onClick={handleEditAccount}>
-                  {isEditInfo ? <SaveOutlined /> : <EditOutlined />}
+                    <SaveOutlined />
                   <span className="profile-btn-text">編集</span>
                 </button>
               </div>

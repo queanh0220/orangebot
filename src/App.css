@@ -16,6 +16,13 @@
   border: 1px solid blue !important;
 }
 
+.input-err {
+  color: red;
+  font-weight: 300;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
 .button {
   background-color: var(--primary-color);
   min-width: 147px;

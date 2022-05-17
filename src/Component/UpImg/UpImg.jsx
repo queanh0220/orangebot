@@ -1,11 +1,27 @@
-import React, { useState } from "react";
-import "./UpImg.css"
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import "./UpImg.css";
 export default function UpImg(props) {
   const [img, setImg] = useState(
     "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg"
   );
 
   const handleImg = (e) => {
+    const formData = new FormData();
+    formData.append("img", e.target.files[0]);
+    axios
+      .post("http://localhost:4000/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        props.saveImg({ img: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
@@ -14,6 +30,10 @@ export default function UpImg(props) {
       }
     };
   };
+
+  useEffect(() => {
+    if(props.img) setImg(props.img)
+  });
 
   return (
     <div className={"up-img " + props.className}>

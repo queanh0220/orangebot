@@ -13,6 +13,8 @@ import Dialogue from './Page/Aggregation/Dialogue/Dialogue';
 import Graph from './Page/Aggregation/Graph/Graph';
 import GraphTable from './Page/Aggregation/Graph/GraphTable/GraphTable';
 import GraphBar from './Page/Aggregation/Graph/GraphBar/GraphBar';
+import GraphLine from './Page/Aggregation/Graph/GraphLine/GraphLine';
+import GraphColum from './Page/Aggregation/Graph/GraphColumn/GraphColum';
 
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
             <Route path='aggregation/graph' element={<Graph/>} >
               <Route path='table' element={<GraphTable />} />
               <Route path='bar' element={<GraphBar />} />
+              <Route path='line' element={<GraphLine />} />
+              <Route path='column' element={<GraphColum />} />
               <Route path='*' element={<GraphBar />} />
             </Route>
             <Route path='*' element={<Scenario />} />
