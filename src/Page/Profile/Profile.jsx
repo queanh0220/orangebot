@@ -5,14 +5,9 @@ import person from "../../Svg/person.svg";
 import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import UpImg from "../../Component/UpImg/UpImg";
 import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 export default function Profile() {
-  const [info, setInfo] = useState({
-    name: "本田 圭佑",
-    birthday: "1985-06-13",
-    img: "",
-    email: "",
-    password: "",
-  });
+
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
     birthday: "1985-06-13",
@@ -25,47 +20,48 @@ export default function Profile() {
   const [isEditEmail, setIsEditEmail] = useState(false);
   const userId = localStorage.getItem("userid");
 
+  const getInfo = () => {
+    return axios
+      .get("http://localhost:4000/users/" + userId)
+      .then((res) => {
+        console.log(res.data)
+        setEditInfo({ ...editInfo, ...res.data });
+        return { ...editInfo, ...res.data };
+      })
+    
+  };
+
   const updateInfo = (data) => {
     console.log(data)
-    axios
+    return axios
       .put("http://localhost:4000/users/" + userId, data)
       .then((res) => {
         console.log(res);
       })
-      .catch((err) => {
-        console.log(err);
-      });
   };
+
+  const queryClient = useQueryClient();
+  const {data, isSuccess} = useQuery('get-profile', getInfo, {initialData: editInfo})
+  const mutation = useMutation(updateInfo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('get-profile');
+    }
+  })
+
   const handleEditInfo = () => {
-    updateInfo(editInfo)
-    setInfo(editInfo);
+    mutation.mutate(editInfo);
     setIsEditInfo(false);
   };
 
   const handleEditAccount = () => {
-    updateInfo(editInfo);
-    setInfo(editInfo);
+    mutation.mutate(editInfo);
     setIsEditPassword(false);
     setIsEditEmail(false);
   };
 
-  const getInfo = () => {
-    axios
-      .get("http://localhost:4000/users/" + userId)
-      .then((res) => {
-        console.log(res.data)
-        setInfo({ ...info, ...res.data });
-        setEditInfo({ ...info, ...res.data });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   useEffect(() => {
-    getInfo();
-  }, []);
-
+    console.log("data",data)
+  },[data])
   return (
     <div className="profile">
       <Topbar icon={person} title="プロファイル" />
@@ -74,8 +70,8 @@ export default function Profile() {
           <div className="profile-left bg-item">
             <UpImg
               className="profile-left-img"
-              img={info.img}
-              saveImg={updateInfo}
+              img={isSuccess ? data.img : ""}
+              saveImg={(info)=>{mutation.mutate(info)}}
             />
 
             <div className="profile-left-text">
@@ -101,8 +97,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="profile-left-info">
-                  <p>{info.name}</p>
-                  <p>{info.birthday}</p>
+                  <p>{ data.name }</p>
+                  <p> {data.birthday }</p>
                 </div>
               )}
             </div>

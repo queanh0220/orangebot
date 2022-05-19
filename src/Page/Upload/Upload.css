@@ -102,3 +102,17 @@
     background-color: rgba(255, 255, 255, 0);
 }
 
+.upload-icon svg  {
+    color: rgb(169, 169, 169);  
+}
+
+.upload-delete-icon {
+    color: rgb(169, 169, 169); 
+    display: none;
+    cursor: pointer;
+}
+
+.ant-table-row:hover  .upload-delete-icon {
+    display: inline-block;
+}
+

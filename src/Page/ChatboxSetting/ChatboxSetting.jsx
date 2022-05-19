@@ -6,10 +6,13 @@ import iconButton from "../../Svg/chatbox/tag.svg";
 import sendicon from "../../Svg/chatbox/send.svg";
 import { CopyOutlined, MinusOutlined, SaveOutlined, SendOutlined, SettingOutlined } from "@ant-design/icons";
 import UpImg from "../../Component/UpImg/UpImg";
+import ColorPicker from "../../Component/ColorPicker/ColorPicker";
 export default function ChatboxSetting() {
   const [img, setImg] = useState(
     "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg"
   );
+  const [headerBg,setHeaderBg] = useState("");
+  const [headerIcon, setHeaderIcon] = useState("");
 
   const url = '<script src="https://localhost:8443/chatbot/forLP.js" charset="UTF-8" tenant-id="cc88883ebffbe99bfda924c637edd315" url-page-counter="google.com"></script>'
 
@@ -26,6 +29,7 @@ export default function ChatboxSetting() {
                   <span>背景</span>
                   <button>
                     <img src={iconButton} alt="" />
+                    
                   </button>
                   <span>アイコン</span>
                   <button>

@@ -5,6 +5,8 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../Component/Logo/Logo";
 import axios from "axios";
+import { CirclePicker } from "react-color";
+import ColorPicker from "../../Component/ColorPicker/ColorPicker";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
