@@ -6,8 +6,9 @@ import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import UpImg from "../../Component/UpImg/UpImg";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 export default function Profile() {
-
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
     birthday: "1985-06-13",
@@ -18,50 +19,67 @@ export default function Profile() {
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isEditEmail, setIsEditEmail] = useState(false);
-  const userId = localStorage.getItem("userid");
-
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
   const getInfo = () => {
     return axios
-      .get("http://localhost:4000/users/" + userId)
+      .get("http://localhost:4000/users/", {
+        headers: { Authorization: token },
+      })
       .then((res) => {
-        console.log(res.data)
+        console.log("data", res.data);
         setEditInfo({ ...editInfo, ...res.data });
         return { ...editInfo, ...res.data };
       })
-    
+      .catch((err) => {
+        navigate("/");
+        toast.error(err.message);
+        console.log("err", err);
+      });
   };
 
   const updateInfo = (data) => {
-    console.log(data)
+    console.log(data);
     return axios
-      .put("http://localhost:4000/users/" + userId, data)
+      .put("http://localhost:4000/users/", data, {
+        headers: { Authorization: token },
+      })
       .then((res) => {
         console.log(res);
-      })
+      });
   };
 
   const queryClient = useQueryClient();
-  const {data, isSuccess} = useQuery('get-profile', getInfo, {initialData: editInfo})
+  const { data, isSuccess } = useQuery("get-profile", getInfo, {
+    initialData: editInfo,
+  });
   const mutation = useMutation(updateInfo, {
     onSuccess: () => {
-      queryClient.invalidateQueries('get-profile');
-    }
-  })
+      queryClient.invalidateQueries("get-profile");
+    },
+  });
 
   const handleEditInfo = () => {
-    mutation.mutate(editInfo);
+    const { password, ...data } = editInfo;
+    mutation.mutate(data);
     setIsEditInfo(false);
   };
 
   const handleEditAccount = () => {
-    mutation.mutate(editInfo);
+    if (isEditPassword) {
+      mutation.mutate(editInfo);
+    } else {
+      const { password, ...data } = editInfo;
+      mutation.mutate(data);
+    }
+
     setIsEditPassword(false);
     setIsEditEmail(false);
   };
 
   useEffect(() => {
-    console.log("data",data)
-  },[data])
+    console.log("data", data);
+  }, [data]);
   return (
     <div className="profile">
       <Topbar icon={person} title="プロファイル" />
@@ -70,8 +88,10 @@ export default function Profile() {
           <div className="profile-left bg-item">
             <UpImg
               className="profile-left-img"
-              img={isSuccess ? data.img : ""}
-              saveImg={(info)=>{mutation.mutate(info)}}
+              img={data.img}
+              saveImg={(info) => {
+                mutation.mutate(info);
+              }}
             />
 
             <div className="profile-left-text">
@@ -97,8 +117,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="profile-left-info">
-                  <p>{ data.name }</p>
-                  <p> {data.birthday }</p>
+                  <p>{data.name}</p>
+                  <p> {data.birthday}</p>
                 </div>
               )}
             </div>
@@ -133,15 +153,18 @@ export default function Profile() {
                   type="text"
                   placeholder="example"
                   className="input-text"
+                  readOnly={!isEditEmail}
                   value={editInfo.email}
                   onChange={(e) =>
                     setEditInfo({ ...editInfo, email: e.target.value })
                   }
                 />
-                <EditOutlined
-                  className="profile-right-icon"
-                  onClick={() => setIsEditEmail(true)}
-                />
+                {!isEditEmail && (
+                  <EditOutlined
+                    className="profile-right-icon"
+                    onClick={() => setIsEditEmail(true)}
+                  />
+                )}
               </div>
             </div>
             <div className="profile-right-item">
@@ -151,7 +174,7 @@ export default function Profile() {
                   type="password"
                   placeholder="......"
                   className="input-text"
-                  value={editInfo.password}
+                  readOnly={!isEditPassword}
                   onChange={(e) =>
                     setEditInfo({ ...editInfo, password: e.target.value })
                   }
@@ -189,9 +212,9 @@ export default function Profile() {
                 >
                   キャンセル
                 </span>
-                
+
                 <button onClick={handleEditAccount}>
-                    <SaveOutlined />
+                  <SaveOutlined />
                   <span className="profile-btn-text">編集</span>
                 </button>
               </div>

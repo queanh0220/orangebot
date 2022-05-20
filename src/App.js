@@ -15,12 +15,15 @@ import GraphBar from "./Page/Aggregation/Graph/GraphBar/GraphBar";
 import GraphLine from "./Page/Aggregation/Graph/GraphLine/GraphLine";
 import GraphColum from "./Page/Aggregation/Graph/GraphColumn/GraphColum";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ToastContainer } from "react-toastify";
+
 
 function App() {
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
       <div className="app">
+        <ToastContainer/>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Login />} />

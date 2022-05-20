@@ -14,6 +14,7 @@ import {
 } from "../../Svg/sidebar/sidebar";
 import toggle from "../../Svg/sidebar/toggle.svg";
 import SidebarItem from "../SidebarItem/SidebarItem";
+import { toast } from "react-toastify";
 
 export default function Sidebar() {
   const [show, setShow] = useState(false);
@@ -23,7 +24,9 @@ export default function Sidebar() {
   console.log(location)
   const navigate = useNavigate();
   const handleLogout = () => {
+    localStorage.setItem("token", "")
     navigate("/");
+    toast.success("Logout success")
   };
 
   const handleNavigate = (active) => {

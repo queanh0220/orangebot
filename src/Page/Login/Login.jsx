@@ -7,13 +7,13 @@ import Logo from "../../Component/Logo/Logo";
 import axios from "axios";
 import { CirclePicker } from "react-color";
 import ColorPicker from "../../Component/ColorPicker/ColorPicker";
+import { toast } from "react-toastify";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errUsername, setErrUsername] = useState("");
   const [errPassword, setErrPassword] = useState("");
   const navigate = useNavigate();
-
   const checknull = () => {
     let ck = false;
     if (!username) {
@@ -30,23 +30,22 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/home/profile");
-    // if (checknull()) return;
-    // axios
-    //   .post("http://localhost:4000/users/login", { username, password })
-    //   .then((res) => {
-    //     console.log(res);
-    //     localStorage.setItem("userid", res.data);
-    //     navigate("/home/profile");
-    //   })
-    //   .catch((err) => {
-    //     if (err.response.data === "wrong password") {
-    //       setErrPassword("パスワードが正しくありません!");
-    //     } else {
-    //       setErrUsername("ユーザー名が正しくありません!");
-    //     }
-    //     console.log("err", err.response.data);
-    //   });
+    if (checknull()) return;
+    axios
+      .post(process.env.REACT_APP_API_URL+"/users/login", { username, password })
+      .then((res) => {
+        localStorage.setItem("token", res.headers.token);
+        navigate("/home/profile");
+        toast.success("Login success")
+      })
+      .catch((err) => {
+        if (err.response.data === "wrong password") {
+          setErrPassword("パスワードが正しくありません!");
+        } else {
+          setErrUsername("ユーザー名が正しくありません!");
+        }
+        console.log("err", err.response.data);
+      });
   };
   return (
     <div className="login">

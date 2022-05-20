@@ -212,6 +212,7 @@ export default function Upload() {
     const file = e.target.files[0];
     formData.append("file", file);
     console.log(e.target.files[0]);
+    console.log("form", formData)
     axios
       .post("http://localhost:4000/upload", formData, {
         headers: {
