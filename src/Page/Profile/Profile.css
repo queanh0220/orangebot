@@ -129,7 +129,7 @@
 
 .profile-btn-right {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     margin-top: auto;
 }
 

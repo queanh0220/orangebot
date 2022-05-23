@@ -1,0 +1,21 @@
+.chatbox-btn {
+    position: relative;
+    width: 60px;
+    height: 32px;
+   background-color: white;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    color: white;
+}
+
+.chatbox-btn .icon {
+    height: 100%;
+    background-color: black;
+    -webkit-mask: url("../../../Svg/chatbox/tag.svg") no-repeat center;
+    mask: url("../../../Svg/chatbox/tag.svg") no-repeat center;
+
+}
+
+.chatbox-btn:hover > .cp-content {
+    display: block;
+}

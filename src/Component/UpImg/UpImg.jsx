@@ -12,7 +12,7 @@ export default function UpImg(props) {
     if (e.target.files[0]) {
       formData.append("file", e.target.files[0]);
       axios
-        .post("http://localhost:4000/upload", formData, {
+        .post(process.env.REACT_APP_API_URL+"upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

@@ -14,22 +14,28 @@ export default function Profile() {
     birthday: "1985-06-13",
     img: "",
     email: "",
-    password: "",
   });
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [cfPassword, setCfPassword] = useState("");
+  const [errPassword, setErrPassword] = useState("");
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isEditEmail, setIsEditEmail] = useState(false);
+
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+
   const getInfo = () => {
     return axios
-      .get("http://localhost:4000/users/", {
+      .get(process.env.REACT_APP_API_URL + "users/", {
         headers: { Authorization: token },
       })
       .then((res) => {
-        console.log("data", res.data);
-        setEditInfo({ ...editInfo, ...res.data });
-        return { ...editInfo, ...res.data };
+        
+        const {_id, password, ...data} = res.data;
+        setEditInfo({ ...editInfo, ...data });
+        return { ...editInfo, ...data };
       })
       .catch((err) => {
         navigate("/");
@@ -39,41 +45,68 @@ export default function Profile() {
   };
 
   const updateInfo = (data) => {
-    console.log(data);
+    console.log("update",data);
     return axios
-      .put("http://localhost:4000/users/", data, {
+      .put(process.env.REACT_APP_API_URL + "users/", data, {
         headers: { Authorization: token },
       })
       .then((res) => {
-        console.log(res);
+        toast.success("update success!")
       });
   };
 
+  const updatePassword = (data) => {
+    return axios
+      .put(process.env.REACT_APP_API_URL + "users/password/", data, {
+        headers: { Authorization: token },
+      })
+      .then((res) => {
+        toast.success("update success!")
+        setIsEditPassword(false);
+      })
+      .catch(err => {
+        setErrPassword(err.response.data);
+      })
+  }
+
   const queryClient = useQueryClient();
   const { data, isSuccess } = useQuery("get-profile", getInfo, {
-    initialData: editInfo,
+    initialData: {},
   });
   const mutation = useMutation(updateInfo, {
     onSuccess: () => {
       queryClient.invalidateQueries("get-profile");
     },
   });
+  const mutationPassword = useMutation(updatePassword, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-profile");
+    },
+  });
 
   const handleEditInfo = () => {
-    const { password, ...data } = editInfo;
-    mutation.mutate(data);
+    mutation.mutate(editInfo);
     setIsEditInfo(false);
+  };
+
+  const checkpassword = () => {
+  
+    if (newPassword !== cfPassword) {
+      setErrPassword("new password and confirm password do not match!");
+      return false;
+    }
+    return true;
   };
 
   const handleEditAccount = () => {
     if (isEditPassword) {
-      mutation.mutate(editInfo);
+      if (checkpassword()) {
+        mutationPassword.mutate({oldPassword, newPassword});
+      }
     } else {
-      const { password, ...data } = editInfo;
-      mutation.mutate(data);
+      mutation.mutate(editInfo);
     }
 
-    setIsEditPassword(false);
     setIsEditEmail(false);
   };
 
@@ -175,8 +208,9 @@ export default function Profile() {
                   placeholder="......"
                   className="input-text"
                   readOnly={!isEditPassword}
+                  value={oldPassword}
                   onChange={(e) =>
-                    setEditInfo({ ...editInfo, password: e.target.value })
+                    setOldPassword(e.target.value)
                   }
                 />
                 {!isEditPassword && (
@@ -192,31 +226,38 @@ export default function Profile() {
                     type="password"
                     placeholder="......"
                     className="input-text"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                   />
                   <input
                     type="password"
                     placeholder="......"
                     className="input-text"
+                    value={cfPassword}
+                    onChange={(e) => setCfPassword(e.target.value)}
                   />
                 </div>
               )}
             </div>
             {(isEditPassword || isEditEmail) && (
               <div className="profile-btn profile-btn-right">
-                <span
-                  className="profile-cancel-edit"
-                  onClick={() => {
-                    setIsEditPassword(false);
-                    setIsEditEmail(false);
-                  }}
-                >
-                  キャンセル
-                </span>
+                <span className="input-err">{errPassword}</span>
+                <div>
+                  <span
+                    className="profile-cancel-edit"
+                    onClick={() => {
+                      setIsEditPassword(false);
+                      setIsEditEmail(false);
+                    }}
+                  >
+                    キャンセル
+                  </span>
 
-                <button onClick={handleEditAccount}>
-                  <SaveOutlined />
-                  <span className="profile-btn-text">編集</span>
-                </button>
+                  <button onClick={handleEditAccount}>
+                    <SaveOutlined />
+                    <span className="profile-btn-text">編集</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>

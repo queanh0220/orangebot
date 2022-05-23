@@ -21,10 +21,10 @@ import { formatBytes } from "../../Utils/formatBytes";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 export default function Upload() {
-  const process = 60;
+  const store = 60;
 
   const getData = () => {
-    return axios.get("http://localhost:4000/files").then((res) => {
+    return axios.get(process.env.REACT_APP_API_URL+"files").then((res) => {
       let sizeDoc = 0,
         sizeVideo = 0,
         sizeZip = 0,
@@ -56,14 +56,14 @@ export default function Upload() {
   };
 
   const upload = (data) => {
-    return axios.post("http://localhost:4000/files", data);
+    return axios.post(process.env.REACT_APP_API_URL+"files", data);
   };
 
   const deleteFile = (id) => {
-    return axios.delete("http://localhost:4000/files/" + id);
+    return axios.delete(process.env.REACT_APP_API_URL+"files/" + id);
   };
   
-  const { data } = useQuery("get-files", getData, {initialData: []});
+  const { data, isLoading } = useQuery("get-files", getData, {initialData: []});
   useEffect(() => {
     console.log("data",data)
   },[data])
@@ -214,7 +214,7 @@ export default function Upload() {
     console.log(e.target.files[0]);
     console.log("form", formData)
     axios
-      .post("http://localhost:4000/upload", formData, {
+      .post(process.env.REACT_APP_API_URL+"upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -297,7 +297,7 @@ export default function Upload() {
                 <div className="upload-process">
                   <div
                     className="upload-process-fill"
-                    style={{ width: process + "%" }}
+                    style={{ width: store + "%" }}
                   ></div>
                 </div>
               </div>
@@ -309,6 +309,7 @@ export default function Upload() {
                 dataSource={data.files}
                 rowKey={(record) => record["_id"]}
                 pagination={{ pageSize: 5 }}
+                loading={isLoading}
               />
             </div>
           </div>

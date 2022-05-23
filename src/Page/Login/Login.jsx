@@ -1,18 +1,19 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Input } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../Component/Logo/Logo";
 import axios from "axios";
-import { CirclePicker } from "react-color";
-import ColorPicker from "../../Component/ColorPicker/ColorPicker";
 import { toast } from "react-toastify";
+import Loading from '../../Component/Loading/Loading'
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errUsername, setErrUsername] = useState("");
   const [errPassword, setErrPassword] = useState("");
+  const [isLoading, setIsLoading] = useState('');
   const navigate = useNavigate();
   const checknull = () => {
     let ck = false;
@@ -28,11 +29,12 @@ export default function Login() {
     return ck;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (checknull()) return;
-    axios
-      .post(process.env.REACT_APP_API_URL+"/users/login", { username, password })
+    setIsLoading(true);
+    await axios
+      .post(process.env.REACT_APP_API_URL+"users/login", { username, password })
       .then((res) => {
         localStorage.setItem("token", res.headers.token);
         navigate("/home/profile");
@@ -46,9 +48,11 @@ export default function Login() {
         }
         console.log("err", err.response.data);
       });
+    setIsLoading(false);
   };
   return (
     <div className="login">
+      {isLoading && <Loading />}
       <Logo className="login-logo" show={true} />
       <form className="login-form" action="#" method="POST">
         <h2>ログイン</h2>

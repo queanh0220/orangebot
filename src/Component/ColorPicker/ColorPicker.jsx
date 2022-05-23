@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ColorPicker.css";
-import { CirclePicker } from "react-color";
 import { Input } from "antd";
+import { ChromePicker } from "react-color";
+import rgbHex from "rgb-hex";
 
 export default function ColorPicker(props) {
   const colors = [
@@ -20,18 +21,21 @@ export default function ColorPicker(props) {
     "#10B981",
     "#84CC16",
   ];
+  const [onShow, setOnShow] = useState(false);
+
   return (
     <div className="bg-item cp-content">
-      {/* <CirclePicker
-        width="203px"
-        circleSize={24}
-        circleSpacing={5}
-      /> */}
       <div className="cp-color-container">
         {colors.map((data) => {
           return (
-            <div className="cp-list-color" style={{ background: data }}></div>
-        );
+            <div
+              className={
+                "cp-list-color " + (data === props.color ? "active" : "")
+              }
+              style={{ background: data, color: data }}
+              onClick={() => props.setColor(data)}
+            ></div>
+          );
         })}
       </div>
 
@@ -42,10 +46,24 @@ export default function ColorPicker(props) {
           value={props.color}
           onChange={(e) => props.setColor(e.target.value)}
           prefix={
-            <div className="cp-color" style={{ background: props.color }}></div>
+            <div
+              className="cp-color"
+              style={{ background: props.color }}
+              onClick={() => setOnShow((pre) => !pre)}
+            ></div>
           }
         />
       </div>
+      {onShow && (
+        <ChromePicker
+          className="cp-chrome"
+          width={"100%"}
+          color={props.color}
+          onChange={(c) =>
+            props.setColor("#" + rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a))
+          }
+        />
+      )}
     </div>
   );
 }

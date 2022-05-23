@@ -1,0 +1,12 @@
+.chatboxSetting-input {
+    display: flex;
+    margin-top: 8px;
+    gap: 24px;
+}
+
+.chatboxSetting-input input, .chatboxSetting-bottom-input input {
+    padding: 4px 8px;
+}
+.chatboxSetting-input select {
+    width: 70px;
+}

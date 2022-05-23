@@ -42,6 +42,10 @@
     transform: scale(1.2);
 }
 
+.cp-list-color.active {
+    box-shadow: 0px 0px 10px 0px currentColor;
+}
+
 .cp-set-color {
     display: flex;
     align-items: center;
@@ -63,3 +67,9 @@
     border: 1px solid #D9D9D9;
     border-radius: 2px;
 }
+
+.cp-chrome {
+    margin-top: 16px;
+    z-index: 200;
+}
+
