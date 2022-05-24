@@ -23,7 +23,9 @@ export default function Tables(props) {
       rowSelection={rowSelection}
       columns={props.columns}
       dataSource={props.data}
+      rowKey={(record) => record["_id"]}
       pagination={{ pageSize: props.pageSize }}
+      expandable={props.expandable}
     />
   );
 }

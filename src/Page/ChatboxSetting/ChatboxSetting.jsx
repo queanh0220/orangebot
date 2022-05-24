@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ChatboxSetting.css";
 import icon from "../../Svg/chatboxsetting.svg";
 import Topbar from "../../Component/Topbar/Topbar";
@@ -12,41 +12,47 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import UpImg from "../../Component/UpImg/UpImg";
-import ColorPicker from "../../Component/ColorPicker/ColorPicker";
 import ChatboxButton from "./ChatboxButton/ChatboxButton";
 import ChatboxInput from "./ChatboxInput/ChatboxInput";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { chatboxDefault } from "../../data";
 export default function ChatboxSetting() {
-  const [img, setImg] = useState(
-    "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg"
-  );
-  const [header, setHeader] = useState({
-    img: "",
-    backgroundColor: "#025967",
-    iconColor: "#ffffff",
-    title: "チャットボット",
-    text: "24時間受け付けてます！",
-    titleSize: 14,
-    textSize: 14,
-    titleColor: "#ffffff",
-    textColor: "#ffffff",
-  });
-  const [body, setBody] = useState({
-    backgroundColor: "#D9D9D9",
-    text: "",
-    scenario: "",
-    input: "",
-    textColor: "#ffffff",
-    sceniarioColor: "#ffffff",
-    inputColor: "#ffffff",
-    textSize: 14,
-    scenarioSize: 14,
-    inputSize: 14,
-  });
 
-  const url =
-    '<script src="https://localhost:8443/chatbot/forLP.js" charset="UTF-8" tenant-id="cc88883ebffbe99bfda924c637edd315" url-page-counter="google.com"></script>';
+  const [imgFile, setImgFile] = useState('');
 
-  const regColor = /^#([d-f][a-fA-F0-9]){3}$/;
+  const [chatbox, setChatbox] = useState(chatboxDefault);
+
+  const url = '<script src="https://localhost:8443/chatbot/forLP.js" charset="UTF-8" tenant-id="cc88883ebffbe99bfda924c637edd315" url-page-counter="google.com"></script>';
+  const getData = () => {
+    const token = localStorage.getItem('token')
+    axios
+      .get(process.env.REACT_APP_API_URL + "chatboxs/", {
+        headers: { Authorization: token },
+      })
+      .then(res => {
+        setChatbox({...chatbox, ...res.data})
+      })
+  }
+
+  const handleSave = () => {
+    const token = localStorage.getItem('token');
+    const {_id, ...data} = chatbox;
+    console.log(data);
+    axios.put(process.env.REACT_APP_API_URL + "chatboxs/", data,  {
+      headers: { Authorization: token },
+    }).then(() => {
+      toast.success("Update success");
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  useEffect(() => {
+    getData()
+  },[])
+
   return (
     <div className="chatboxSetting">
       <Topbar icon={icon} title="チャットボットUIの設定" />
@@ -59,19 +65,19 @@ export default function ChatboxSetting() {
                 <div className="chatboxSetting-head-right">
                   <span>背景</span>
                   <ChatboxButton
-                    color={header.backgroundColor}
+                    color={chatbox.headBgColor}
                     setColor={(color) => {
-                      setHeader((pre) => {
-                        return { ...pre, backgroundColor: color };
+                      setChatbox((pre) => {
+                        return { ...pre, headBgColor: color };
                       });
                     }}
                   />
 
                   <span>アイコン</span>
                   <ChatboxButton
-                    color={header.iconColor}
+                    color={chatbox.iconColor}
                     setColor={(color) => {
-                      setHeader((pre) => {
+                      setChatbox((pre) => {
                         return { ...pre, iconColor: color };
                       });
                     }}
@@ -79,20 +85,20 @@ export default function ChatboxSetting() {
                 </div>
               </div>
               <div className="chatboxSetting-title-content">
-                <UpImg className="chatboxSetting-img" />
+                <UpImg className="chatboxSetting-img" img={chatbox.img} setImgFIle={setImgFile}/>
 
                 <div className="chatboxSetting-box-content">
                   <p>文書</p>
                   <ChatboxInput
-                    text={header.title}
+                    text={chatbox.title}
                     setText={(e) =>
-                      setHeader((pre) => {
+                      setChatbox((pre) => {
                         return { ...pre, title: e.target.value };
                       })
                     }
-                    color={header.titleColor}
+                    color={chatbox.titleColor}
                     setColor={(color) => {
-                      setHeader((pre) => {
+                      setChatbox((pre) => {
                         return { ...pre, titleColor: color };
                       });
                     }}
@@ -100,16 +106,16 @@ export default function ChatboxSetting() {
                   />
 
                   <ChatboxInput
-                    text={header.text}
+                    text={chatbox.headText}
                     setText={(e) =>
-                      setHeader((pre) => {
-                        return { ...pre, text: e.target.value };
+                      setChatbox((pre) => {
+                        return { ...pre, headText: e.target.value };
                       })
                     }
-                    color={header.textColor}
+                    color={chatbox.headTextColor}
                     setColor={(color) => {
-                      setHeader((pre) => {
-                        return { ...pre, textColor: color };
+                      setChatbox((pre) => {
+                        return { ...pre, headTextColor: color };
                       });
                     }}
                     placeholder="24時間受け付けてます！"
@@ -123,10 +129,10 @@ export default function ChatboxSetting() {
                 <div className="chatboxSetting-head-right">
                   <span>背景</span>
                   <ChatboxButton
-                    color={body.backgroundColor}
+                    color={chatbox.bodyBgColor}
                     setColor={(color) => {
-                      setBody((pre) => {
-                        return { ...pre, backgroundColor: color };
+                      setChatbox((pre) => {
+                        return { ...pre, bodyBgColor: color };
                       });
                     }}
                   />
@@ -136,16 +142,16 @@ export default function ChatboxSetting() {
                 <div className="chatboxSetting-box-content">
                   <p>本文</p>
                   <ChatboxInput
-                    text={body.text}
+                    text={chatbox.bodyText}
                     setText={(e) =>
-                      setBody((pre) => {
-                        return { ...pre, text: e.target.value };
+                      setChatbox((pre) => {
+                        return { ...pre, bodyText: e.target.value };
                       })
                     }
-                    color={body.textColor}
+                    color={chatbox.bodyTextColor}
                     setColor={(color) => {
-                      setBody((pre) => {
-                        return { ...pre, textColor: color };
+                      setChatbox((pre) => {
+                        return { ...pre, bodyTextColor: color };
                       });
                     }}
                     placeholder="お問い合わせ内容を入力していただくか、以下から選んでください"
@@ -154,15 +160,15 @@ export default function ChatboxSetting() {
                 <div className="chatboxSetting-box-content">
                   <p>シナリオ</p>
                   <ChatboxInput
-                    text={body.scenario}
+                    text={chatbox.scenario}
                     setText={(e) =>
-                      setBody((pre) => {
+                      setChatbox((pre) => {
                         return { ...pre, scenario: e.target.value };
                       })
                     }
-                    color={body.sceniarioColor}
+                    color={chatbox.sceniarioColor}
                     setColor={(color) => {
-                      setBody((pre) => {
+                      setChatbox((pre) => {
                         return { ...pre, sceniarioColor: color };
                       });
                     }}
@@ -172,15 +178,15 @@ export default function ChatboxSetting() {
                 <div className="chatboxSetting-box-content">
                   <p>入力欄</p>
                   <ChatboxInput
-                    text={body.input}
+                    text={chatbox.input}
                     setText={(e) =>
-                      setBody((pre) => {
-                        return { ...pre, scenario: e.target.value };
+                      setChatbox((pre) => {
+                        return { ...pre, input: e.target.value };
                       })
                     }
-                    color={body.inputColor}
+                    color={chatbox.inputColor}
                     setColor={(color) => {
-                      setBody((pre) => {
+                      setChatbox((pre) => {
                         return { ...pre, inputColor: color };
                       });
                     }}
@@ -191,17 +197,23 @@ export default function ChatboxSetting() {
             </div>
           </div>
           <div className="chatboxSetting-right">
-            <div className="chatboxSetting-right-head" style={{background: header.backgroundColor}}>
-              <img src={img} alt="" />
+            <div
+              className="chatboxSetting-right-head"
+              style={{ background: chatbox.headBgColor }}
+            >
+              <img src={chatbox.img} alt="" />
               <div className="chatboxSetting-right-text">
-                <h3 style={{color: header.titleColor}}>{header.title}</h3>
-                <p style={{color: header.textColor}}>{header.text}</p>
+                <h3 style={{ color: chatbox.titleColor }}>{chatbox.title}</h3>
+                <p style={{ color: chatbox.headTextColor }}>{chatbox.headText}</p>
               </div>
               <button>
-                <MinusOutlined style={{color: header.iconColor}}/>
+                <MinusOutlined style={{ color: chatbox.iconColor }} />
               </button>
             </div>
-            <div className="chatboxSetting-right-content" style={{background: body.backgroundColor}}></div>
+            <div
+              className="chatboxSetting-right-content"
+              style={{ background: chatbox.bodyBgColor }}
+            ></div>
             <div className="chatboxSetting-right-foot">
               <input
                 type="text"
@@ -235,7 +247,7 @@ export default function ChatboxSetting() {
               <p>デフォルトに戻す</p>
             </button>
             <span className="chatboxSetting-cancel-btn">元に戻す</span>
-            <button className="chatboxSetting-save-btn button">
+            <button className="chatboxSetting-save-btn button" onClick={handleSave}>
               <SaveOutlined />
               <p>保存する</p>
             </button>

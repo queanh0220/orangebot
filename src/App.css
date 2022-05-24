@@ -2,6 +2,16 @@
   background-color: #f0f0f0;
 }
 
+.input-no-style {
+  display: inline-block;
+  border: none;
+}
+
+.input-no-style:focus {
+  outline: none;
+  border: none;
+}
+
 .input-text {
   width: 100%;
   padding: 8px 12px;

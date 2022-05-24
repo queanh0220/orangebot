@@ -8,6 +8,7 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axiosCustom from "../../Api/axiosCustom";
 export default function Profile() {
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
@@ -15,6 +16,7 @@ export default function Profile() {
     img: "",
     email: "",
   });
+  const [imgFile, setImgFile] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [cfPassword, setCfPassword] = useState("");
@@ -27,13 +29,14 @@ export default function Profile() {
   const navigate = useNavigate();
 
   const getInfo = () => {
-    return axios
-      .get(process.env.REACT_APP_API_URL + "users/", {
-        headers: { Authorization: token },
-      })
+    // return axios
+    // .get(process.env.REACT_APP_API_URL + "users/", {
+    //   headers: { Authorization: token },
+    // })
+    return axiosCustom
+      .get("/users")
       .then((res) => {
-        
-        const {_id, password, ...data} = res.data;
+        const { _id, password, ...data } = res.data;
         setEditInfo({ ...editInfo, ...data });
         return { ...editInfo, ...data };
       })
@@ -45,14 +48,32 @@ export default function Profile() {
   };
 
   const updateInfo = (data) => {
-    console.log("update",data);
-    return axios
-      .put(process.env.REACT_APP_API_URL + "users/", data, {
-        headers: { Authorization: token },
-      })
-      .then((res) => {
-        toast.success("update success!")
-      });
+    if (imgFile) {
+      const formData = new FormData();
+      formData.append("file", imgFile);
+      axios
+        .post(process.env.REACT_APP_API_URL + "upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+    
+          data.img = res.data;
+          axios
+            .put(process.env.REACT_APP_API_URL + "users/", data, {
+              headers: { Authorization: token },
+            })
+            .then((res) => {
+              toast.success("update success!");
+            });
+            console.log("update", data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    return;
   };
 
   const updatePassword = (data) => {
@@ -61,13 +82,13 @@ export default function Profile() {
         headers: { Authorization: token },
       })
       .then((res) => {
-        toast.success("update success!")
+        toast.success("update success!");
         setIsEditPassword(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setErrPassword(err.response.data);
-      })
-  }
+      });
+  };
 
   const queryClient = useQueryClient();
   const { data, isSuccess } = useQuery("get-profile", getInfo, {
@@ -90,7 +111,6 @@ export default function Profile() {
   };
 
   const checkpassword = () => {
-  
     if (newPassword !== cfPassword) {
       setErrPassword("new password and confirm password do not match!");
       return false;
@@ -101,7 +121,7 @@ export default function Profile() {
   const handleEditAccount = () => {
     if (isEditPassword) {
       if (checkpassword()) {
-        mutationPassword.mutate({oldPassword, newPassword});
+        mutationPassword.mutate({ oldPassword, newPassword });
       }
     } else {
       mutation.mutate(editInfo);
@@ -121,10 +141,8 @@ export default function Profile() {
           <div className="profile-left bg-item">
             <UpImg
               className="profile-left-img"
-              img={data.img}
-              saveImg={(info) => {
-                mutation.mutate(info);
-              }}
+              img={data.img ?? ""}
+              setImgFile={setImgFile}
             />
 
             <div className="profile-left-text">
@@ -209,9 +227,7 @@ export default function Profile() {
                   className="input-text"
                   readOnly={!isEditPassword}
                   value={oldPassword}
-                  onChange={(e) =>
-                    setOldPassword(e.target.value)
-                  }
+                  onChange={(e) => setOldPassword(e.target.value)}
                 />
                 {!isEditPassword && (
                   <EditOutlined

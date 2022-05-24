@@ -7,22 +7,16 @@ export default function UpImg(props) {
   );
 
   const handleImg = (e) => {
-    console.log("img",e.target.files)
-    const formData = new FormData();
+    console.log("img", e.target.files);
     if (e.target.files[0]) {
-      formData.append("file", e.target.files[0]);
-      axios
-        .post(process.env.REACT_APP_API_URL+"upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          props.saveImg({ img: res.data });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      props.setImgFile(e.target.files[0]);
+      const reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImg(reader.result);
+        }
+      };
     }
   };
 

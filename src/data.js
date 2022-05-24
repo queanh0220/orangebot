@@ -196,3 +196,25 @@ export const chartData = [
   { key: 10, name: "面談予約", numUse: 1234, landPage: "Unsplash" },
   { key: 11, name: "面談予約", numUse: 1234, landPage: "Unsplash" },
 ];
+
+export const chatboxDefault = {
+  img: "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg",
+  headBgColor: "#025967",
+  iconColor: "#ffffff",
+  title: "チャットボット",
+  headText: "24時間受け付けてます！",
+  titleSize: 14,
+  headTextSize: 14,
+  titleColor: "#ffffff",
+  headTextColor: "#ffffff",
+  bodyBgColor: "#D9D9D9",
+  bodyText: "",
+  scenario: "",
+  input: "",
+  bodyTextColor: "#ffffff",
+  sceniarioColor: "#ffffff",
+  inputColor: "#ffffff",
+  bodyTextSize: 14,
+  scenarioSize: 14,
+  inputSize: 14,
+};

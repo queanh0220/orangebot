@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Topbar from "../../Component/Topbar/Topbar";
 import "./Marketing.css";
 import icon from "../../Svg/marketing.svg";
@@ -13,6 +13,8 @@ import {
   SaveFilled,
   SendOutlined,
 } from "@ant-design/icons";
+import axiosCustom from "../../Api/axiosCustom";
+import { toast } from "react-toastify";
 export default function Marketing() {
   const [data, setData] = useState([
     // { stt: "テーマ①", status: "無効", date: "2022/02/25", content: "" },
@@ -21,6 +23,33 @@ export default function Marketing() {
   const [active, setActive] = useState({});
   const [content, setContent] = useState("");
   const [isEdit, setIsEdit] = useState(false);
+
+  const getData = () => {
+    axiosCustom.get("/posts").then((res) => {
+      console.log("post",res.data);
+      setData(res.data);
+    });
+  };
+
+  const createData = (data) => {
+    axiosCustom.post("/posts", data).then(() => {
+      getData();
+      toast.success("create success!");
+    });
+  };
+  const updateData = (id, data) => {
+    axiosCustom.put("/posts/" + id, data).then(() => {
+      getData();
+      toast.success("update success!");
+    });
+  };
+
+  const deleteData = (id) => {
+    axiosCustom.delete("/posts/" + id).then(() => {
+      getData()
+      toast.success("delete success!");
+    });
+  };
 
   const handleCreate = () => {
     console.log(1);
@@ -32,24 +61,22 @@ export default function Marketing() {
   const handleSave = () => {
     if (isEdit) {
       active.content = content;
+      const {_id, ...data} = active;
+      updateData(_id, data);
       setCreate(false);
       return;
     }
     const today = new Date();
-    setData([
-      ...data,
-      {
-        stt: "テーマ①",
-        status: "無効",
-        date:
-          today.getFullYear() +
-          "/" +
-          (today.getMonth() + 1) +
-          "/" +
-          today.getDate(),
-        content: content,
-      },
-    ]);
+    createData({
+      status: "無効",
+      date:
+        today.getFullYear() +
+        "/" +
+        (today.getMonth() + 1) +
+        "/" +
+        today.getDate(),
+      content: content,
+    })
     setCreate(false);
   };
 
@@ -58,8 +85,9 @@ export default function Marketing() {
   };
 
   const handlePost = (item) => {
-    (item.status === "有効") ? (item.status = "無効") : (item.status = "有効");
-    setData([...data]);
+    item.status === "有効" ? (item.status = "無効") : (item.status = "有効");
+    const {_id, ...data} = item;
+    updateData(_id, data);
   };
 
   const handleActive = (item) => {
@@ -68,10 +96,14 @@ export default function Marketing() {
   };
 
   const handleDelete = () => {
-    setData(data.filter((item) => item !== active));
+    deleteData(active._id)
     setIsEdit(false);
     setCreate(false);
   };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <div className="marketing">
@@ -94,7 +126,7 @@ export default function Marketing() {
                     <span>スターテス</span>
                     <span>作成日</span>
                   </div>
-                  {data.map((item) => {
+                  {data.map((item, index) => {
                     return (
                       <div
                         className={
@@ -103,7 +135,10 @@ export default function Marketing() {
                         }
                         onClick={() => handleActive(item)}
                       >
-                        <span>{item.stt}</span>
+                        <span style={{ display: "flex", alignItems: "center" }}>
+                          <div style={{ lineHeight: "0px" }}>テーマ</div>
+                          <div className="marketing-item-stt">{index + 1}</div>
+                        </span>
                         <button
                           className={
                             item.status === "有効" ? "marketing-btn-active" : ""

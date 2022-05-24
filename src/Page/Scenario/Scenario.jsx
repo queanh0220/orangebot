@@ -6,34 +6,38 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import Tables from "../../Component/Table/Table";
 import emptyImg from "../../Svg/empty.svg";
 import Dialog from "./Dialog/Dialog";
-import BarChart from "../../Component/Chart/BarChart";
-import icon1 from "../../Svg/scenario/icon1.svg"
+import icon1 from "../../Svg/scenario/icon1.svg";
+import { Table, Tag } from "antd";
+import ScenarioTable from "./ScenarioTable/ScenarioTable";
 export default function Scenario() {
-  const [data, setData] = useState([{
-    name: {
-      icon: icon1,
-      text: "インタビュースケジュール"
-    },
-    author: "UserName",
-    date: "2022/05/25",
-    tag: [],
-    table: [
-      {
-        message: "",
-        control: {
-          label: "",
-          data: {
-            Option: ["", ""],
-            Datapicker: { stime: "", etime: "" },
-            Dropdown: ["", ""],
-          },
-          input: ["input: text", "input: tel", "input: email"],
-        },
-        name: "",
-        cv: false,
+  const [data, setData] = useState([
+    {
+      _id: "abc123",
+      name: {
+        icon: icon1,
+        text: "インタビュースケジュール",
       },
-    ]
-  }]);
+      author: "UserName",
+      date: "2022/05/25",
+      tags: ["orange", "orange"],
+      table: [
+        {
+          message: "電話番号をご入力ください。",
+          control: {
+            label: "[Input: text]",
+            data: {
+              Option: ["", ""],
+              Datapicker: { stime: "", etime: "" },
+              Dropdown: ["", ""],
+            },
+            input: ["input: text", "input: tel", "input: email"],
+          },
+          name: "名前",
+          cv: false,
+        },
+      ],
+    },
+  ]);
   const [showDialog, setShowDialog] = useState(false);
 
   const columns = [
@@ -41,7 +45,6 @@ export default function Scenario() {
       title: "シナリオ名",
       dataIndex: "name",
       render: (name) => {
-
         return (
           <>
             <img src={name.icon} alt="" />
@@ -49,7 +52,6 @@ export default function Scenario() {
           </>
         );
       },
-      
     },
     {
       title: "作成者",
@@ -63,16 +65,32 @@ export default function Scenario() {
     },
     {
       title: "タグ",
-      dataIndex: "tag",
-      width: "25%"
+      dataIndex: "tags",
+      width: "25%",
+      render: (tags) => {
+     
+        return tags.map((item, index) => {
+          console.log("color",item.toLowerCase())
+          return (
+            <Tag color={item.toLowerCase()} key={index}>
+              #{item}
+            </Tag>
+          );
+        });
+      },
     },
+    Table.EXPAND_COLUMN,
     {
       title: "Title",
-      dataIndex: "title",
+      dataIndex: "_id",
       with: "15%",
-      render: () => {
-        return <a>Edit</a>
-      }
+      render: (id) => {
+        return (
+          <label htmlFor={id}>
+            <a>Edit</a>
+          </label>
+        );
+      },
     },
   ];
   return (
@@ -87,23 +105,38 @@ export default function Scenario() {
                 <p className="color-g">
                   まだ投稿はありません。 今すぐ投稿を作成しましょう！
                 </p>
-                <button className="button" onClick={()=>setShowDialog(true)}>
-                <PlusCircleFilled  />
-                <p>新しいシナリオを作成する</p>
-              </button>
+                <button className="button" onClick={() => setShowDialog(true)}>
+                  <PlusCircleFilled />
+                  <p>新しいシナリオを作成する</p>
+                </button>
               </div>
-              
             </>
           ) : (
             <>
-              <button className="button" onClick={()=>setShowDialog(true)}>
-                <PlusCircleFilled/>
+              <button className="button" onClick={() => setShowDialog(true)}>
+                <PlusCircleFilled />
                 <p>新しいシナリオを作成する</p>
               </button>
-              <Tables columns={columns} data={data} pageSize={10} />
+              <Tables
+                columns={columns}
+                data={data}
+                pageSize={10}
+                expandable={{
+                  expandedRowRender: (record) => (
+                    <ScenarioTable table={record.table} />
+                  ),
+                  expandIcon: ({ expanded, onExpand, record }) => (
+                    <input
+                      onClick={(e) => onExpand(record, e)}
+                      id={record._id}
+                      style={{ display: "none" }}
+                    ></input>
+                  ),
+                }}
+              />
             </>
           )}
-           <Dialog show={showDialog} setShow={setShowDialog}/>
+          <Dialog show={showDialog} setShow={setShowDialog} />
         </div>
       </div>
     </div>
