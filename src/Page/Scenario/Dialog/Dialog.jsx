@@ -1,34 +1,78 @@
 import { Modal, Select, Tag } from "antd";
 import { Option } from "antd/lib/mentions";
 import React, { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import axiosCustom from "../../../Api/axiosCustom";
+import { uploadFile } from "../../../Api/uploadFile";
 import UpImg from "../../../Component/UpImg/UpImg";
 import dialogIcon from "../../../Svg/plus-puple.svg";
 import TableScenDialog from "../TableDialog/TableScenDialog";
 import "./Dialog.css";
 export default function Dialog(props) {
   const [name, setName] = useState("");
-  const [tag, setTag] = useState([]);
+  const [tags, setTag] = useState([]);
   const [inputTag, setInputTag] = useState("");
   const [img, setImg] = useState("");
-  const [onSave, setOnSave] = useState(false);
-  const handleClose = () => props.setShow(false);
-  const handleOk = () => {
-    //save info
-    setOnSave(true);
-  };
+  const [imgFile, setImgFile] = useState(null);
+  const [table, setTable] = useState([
+    {
+      message: "",
+      control: {
+        label: "",
+        data: {
+          Option: ["", ""],
+          Datapicker: { stime: "", etime: "" },
+          Dropdown: ["", ""],
+        },
+        input: ["input: text", "input: tel", "input: email"],
+      },
+      name: "",
+      cv: false,
+    },
+  ]);
 
-  useEffect(() => {
-    console.log("onSave", onSave);
-  }, [onSave]);
+  const creactScen = async (data) => {
+    if (imgFile) {
+      const upImg = await uploadFile(imgFile);
+      data.icon = upImg.data;
+    }
+    return axiosCustom
+      .post("/scenarios", data)
+      .then(() => {
+        toast.success("create scenario success");
+      });
+  }
+  const queryClient =  useQueryClient();
+  const mutation = useMutation(creactScen, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-scenarios");
+    },
+  })
+
+  const handleClose = () => props.setShow(false);
+  const handleOk = async () => {
+    //save info
+    mutation.mutate({
+      name: {
+        icon:  img,
+        text: name,
+      },
+      date: new Date(),
+      tags,
+      table,
+    })
+    props.setShow(false);
+  };
 
   const handleChangeTag = (e) => {
     const str = e.target.value;
     if (!str) {
-      tag.pop();
-      setTag([...tag]);
+      tags.pop();
+      setTag([...tags]);
       setInputTag(" ");
     } else if (/.+\s$/.test(str)) {
-      tag.push(str.replace(/ /g, ""));
+      tags.push(str.replace(/ /g, ""));
       setInputTag(" ");
     } else {
       setInputTag(str);
@@ -82,8 +126,8 @@ export default function Dialog(props) {
           </label>
           <div className="input-text dialog-input-tag">
             <div className="dialog-list-tag">
-              {!!tag.length &&
-                tag.map((item, index) => {
+              {!!tags.length &&
+                tags.map((item, index) => {
                   return (
                     <Tag color={item} key={index}>
                       #{item}
@@ -102,9 +146,9 @@ export default function Dialog(props) {
         </div>
         <div className="dialog-img">
           <p>アイコン</p>
-          <UpImg />
+          <UpImg img={img} setImgFile={setImgFile} />
         </div>
-        <TableScenDialog onSave={onSave} endSave={() => setOnSave(false)} />
+        <TableScenDialog table={table} setTable={setTable} />
       </div>
     </Modal>
   );

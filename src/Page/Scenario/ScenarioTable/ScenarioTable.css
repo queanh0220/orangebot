@@ -1,3 +1,11 @@
 .scen-table-cv {
     text-align: center !important;
 }
+
+.scenario-table label {
+    margin-right: 20px !important;
+}
+
+.scenario-table .dialog-table input {
+    background-color: #fafafa7d !important;
+}

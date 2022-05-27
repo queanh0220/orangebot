@@ -83,8 +83,18 @@
 .table-CVpoint {
     display: flex;
     gap: 16px;
+    align-items: center;
+    justify-content: center;
 }
 
 .table-option-padding {
     padding: 8px 8px 0 8px !important;
 }
+
+
+.table-CVpoint .table-radio {
+    width: 15px;
+    height: 15px;
+}
+
+

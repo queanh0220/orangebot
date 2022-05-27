@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosCustom from "../../Api/axiosCustom";
+import { uploadFile } from "../../Api/uploadFile";
 export default function Profile() {
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
@@ -41,39 +42,24 @@ export default function Profile() {
         return { ...editInfo, ...data };
       })
       .catch((err) => {
-        navigate("/");
         toast.error(err.message);
         console.log("err", err);
       });
   };
 
-  const updateInfo = (data) => {
+  const updateInfo = async (data) => {
     if (imgFile) {
-      const formData = new FormData();
-      formData.append("file", imgFile);
-      axios
-        .post(process.env.REACT_APP_API_URL + "upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-    
-          data.img = res.data;
-          axios
-            .put(process.env.REACT_APP_API_URL + "users/", data, {
-              headers: { Authorization: token },
-            })
-            .then((res) => {
-              toast.success("update success!");
-            });
-            console.log("update", data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      const imgRes = await uploadFile(imgFile);
+      data.img = imgRes.data;
     }
-    return;
+    console.log("updateInfo", data);
+    return axios
+      .put(process.env.REACT_APP_API_URL + "users/", data, {
+        headers: { Authorization: token },
+      })
+      .then((res) => {
+        toast.success("update success!");
+      });
   };
 
   const updatePassword = (data) => {

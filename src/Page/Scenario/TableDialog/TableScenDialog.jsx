@@ -5,28 +5,12 @@ import {
   PlusCircleFilled,
   PlusCircleOutlined,
 } from "@ant-design/icons";
+import { Radio } from "antd";
 import React, { useEffect, useState } from "react";
 import "./TableDialog.css";
 export default function TableScenDialog(props) {
-  const [table, setTable] = useState([
-    {
-      message: "",
-      control: {
-        label: "",
-        data: {
-          Option: ["", ""],
-          Datapicker: { stime: "", etime: "" },
-          Dropdown: ["", ""],
-        },
-        input: ["input: text", "input: tel", "input: email"],
-      },
-      name: "",
-      cv: false,
-    },
-  ]);
-
   const insertTable = (index) => {
-    table.splice(index, 0, {
+    props.table.splice(index, 0, {
       message: "",
       control: {
         label: "",
@@ -40,44 +24,44 @@ export default function TableScenDialog(props) {
       name: "",
       cv: false,
     });
-    console.log(table);
-    setTable([...table]);
+    console.log(props.table);
+    props.setTable([...props.table]);
   };
 
   const insertOption = (item, index) => {
     item.splice(index, 0, "");
-    setTable([...table]);
+    props.setTable([...props.table]);
   };
 
   const changeOption = (item, e) => {
     item.control.label = e.target.value;
-    setTable([...table]);
+    props.setTable([...props.table]);
   };
 
   const handleChangeMessage = (item, e) => {
     item.message = e.target.value;
-    setTable([...table]);
+    props.setTable([...props.table]);
   };
 
   const handleChangeName = (item, e) => {
     item.name = e.target.value;
-    setTable([...table]);
+    props.setTable([...props.table]);
   };
 
   const handleChangeTextOption = (item, index, e) => {
     item[index] = e.target.value;
-    setTable([...table]);
+    props.setTable([...props.table]);
   };
 
   const deleteTable = (index) => {
-    table.splice(index, 1);
-    setTable([...table]);
+    props.table.splice(index, 1);
+    props.setTable([...props.table]);
   };
 
   useEffect(() => {
     console.log(props.onSave);
     if (props.onSave) {
-      console.log("save table", table);
+      console.log("save props.table", props.table);
       props.endSave();
     }
   }, [props.onSave]);
@@ -91,7 +75,7 @@ export default function TableScenDialog(props) {
         <th>項目名</th>
         <th>CV地点</th>
       </tr>
-      {table.map((item, index) => {
+      {props.table.map((item, index) => {
         return (
           <>
             <tr>
@@ -138,15 +122,21 @@ export default function TableScenDialog(props) {
               </td>
               <td rowspan="2">
                 <div className="table-CVpoint">
-                  <input type="radio" className="table-radio" />
+                  <input
+                    type="radio"
+                    className="table-radio"
+                    checked={item.cv}
+                    onClick={() => {
+                      item.cv = !item.cv;
+                      props.setTable([...props.table]);
+                    }}
+                  />
                   <PlusCircleFilled
                     style={{ color: "#52C41A" }}
                     onClick={() => insertTable(index + 1)}
                   />
-                  {index === table.length - 1 ? (
-                    <DeleteFilled
-                      style={{ color: "#8C8C8C" }}
-                    />
+                  {index === props.table.length - 1 ? (
+                    <DeleteFilled style={{ color: "#8C8C8C" }} />
                   ) : (
                     <DeleteFilled
                       style={{ color: "#FF4D4F" }}
@@ -207,7 +197,7 @@ export default function TableScenDialog(props) {
                             onChange={(e) => {
                               item.control.data.Datapicker.stime =
                                 e.target.value;
-                              setTable([...table]);
+                              props.setTable([...props.table]);
                             }}
                           />
                         </div>
@@ -223,7 +213,7 @@ export default function TableScenDialog(props) {
                             onChange={(e) => {
                               item.control.data.Datapicker.etime =
                                 e.target.value;
-                              setTable([...table]);
+                              props.setTable([...props.table]);
                             }}
                           />
                         </div>

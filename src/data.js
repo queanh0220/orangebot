@@ -218,3 +218,32 @@ export const chatboxDefault = {
   scenarioSize: 14,
   inputSize: 14,
 };
+
+const scenarios = [
+  {
+    _id: "abc123",
+    name: {
+      icon: "",
+      text: "インタビュースケジュール",
+    },
+    author: "UserName",
+    date: "2022/05/25",
+    tags: ["orange", "orange"],
+    table: [
+      {
+        message: "電話番号をご入力ください。",
+        control: {
+          label: "[Input: text]",
+          data: {
+            Option: ["", ""],
+            Datapicker: { stime: "", etime: "" },
+            Dropdown: ["", ""],
+          },
+          input: ["input: text", "input: tel", "input: email"],
+        },
+        name: "名前",
+        cv: false,
+      },
+    ],
+  },
+]

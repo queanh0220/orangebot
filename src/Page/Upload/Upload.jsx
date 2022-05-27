@@ -19,6 +19,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { dateToString, formatDate, timeSince } from "../../Utils/formatDate";
 import { formatBytes } from "../../Utils/formatBytes";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { uploadFile } from "../../Api/uploadFile";
 
 export default function Upload() {
   const store = 60;
@@ -207,29 +208,17 @@ export default function Upload() {
     }
   };
 
-  const handleUpload = (e) => {
-    const formData = new FormData();
+  const handleUpload = async (e) => {
     const file = e.target.files[0];
-    formData.append("file", file);
-    console.log(e.target.files[0]);
-    console.log("form", formData)
-    axios
-      .post(process.env.REACT_APP_API_URL+"upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        mutationUpdate.mutate({
-          file: { name: file.name, type: getType(file.name.split(".").pop()) },
-          datecreate: new Date(),
-          dateupdate: new Date(),
-          size: file.size,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log(file);
+    let result = await uploadFile(file);
+    mutationUpdate.mutate({
+      file: { name: file.name, type: getType(file.name.split(".").pop()) },
+      datecreate: new Date(),
+      dateupdate: new Date(),
+      size: file.size,
+      link: result.data,
+    });
   };
 
   const uploadButton = (

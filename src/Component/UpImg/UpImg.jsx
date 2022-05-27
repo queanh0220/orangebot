@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./UpImg.css";
 export default function UpImg(props) {
   const [img, setImg] = useState(
-    "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg"
+    props.img ?? "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg"
   );
 
   const handleImg = (e) => {
@@ -19,10 +19,6 @@ export default function UpImg(props) {
       };
     }
   };
-
-  useEffect(() => {
-    if (props.img) setImg(props.img);
-  });
 
   return (
     <div className={"up-img " + props.className}>

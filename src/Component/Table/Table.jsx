@@ -10,6 +10,8 @@ export default function Tables(props) {
         "selectedRows: ",
         selectedRows
       );
+
+      props.setSelected(selectedRowKeys);
     },
     getCheckboxProps: (record) => ({
       disabled: record.name === "Disabled User",

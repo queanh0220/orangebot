@@ -1,44 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Topbar from "../../Component/Topbar/Topbar";
 import "./Scenario.css";
 import icon from "../../Svg/scenario.svg";
-import { PlusCircleFilled } from "@ant-design/icons";
+import { DeleteFilled, PlusCircleFilled } from "@ant-design/icons";
 import Tables from "../../Component/Table/Table";
 import emptyImg from "../../Svg/empty.svg";
 import Dialog from "./Dialog/Dialog";
-import icon1 from "../../Svg/scenario/icon1.svg";
 import { Table, Tag } from "antd";
 import ScenarioTable from "./ScenarioTable/ScenarioTable";
+import axiosCustom from "../../Api/axiosCustom";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { dateToString } from "../../Utils/formatDate";
 export default function Scenario() {
-  const [data, setData] = useState([
-    {
-      _id: "abc123",
-      name: {
-        icon: icon1,
-        text: "インタビュースケジュール",
-      },
-      author: "UserName",
-      date: "2022/05/25",
-      tags: ["orange", "orange"],
-      table: [
-        {
-          message: "電話番号をご入力ください。",
-          control: {
-            label: "[Input: text]",
-            data: {
-              Option: ["", ""],
-              Datapicker: { stime: "", etime: "" },
-              Dropdown: ["", ""],
-            },
-            input: ["input: text", "input: tel", "input: email"],
-          },
-          name: "名前",
-          cv: false,
-        },
-      ],
-    },
-  ]);
+  const getData = () => {
+    return axiosCustom.get("/scenarios").then((res) => res.data);
+  };
+  const { data } = useQuery("get-scenarios", getData, {
+    initialData: [],
+  });
   const [showDialog, setShowDialog] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  const deleteScens = (data) => {
+    console.log(data);
+    return axios.delete(process.env.REACT_APP_API_URL+'scenarios',  {data: data}).then(()=>{toast.success('delete success')})
+  }
+
+  const queryClient =  useQueryClient();
+  const mutation = useMutation(deleteScens, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-scenarios");
+    },
+  })
+  const handleDelete = () => {
+    mutation.mutate(selected);
+  };
 
   const columns = [
     {
@@ -62,15 +60,16 @@ export default function Scenario() {
       title: "作成日",
       dataIndex: "date",
       width: "15%",
+      render: (date) => {
+        return dateToString(new Date(date))
+      }
     },
     {
       title: "タグ",
       dataIndex: "tags",
       width: "25%",
       render: (tags) => {
-     
         return tags.map((item, index) => {
-          console.log("color",item.toLowerCase())
           return (
             <Tag color={item.toLowerCase()} key={index}>
               #{item}
@@ -81,7 +80,15 @@ export default function Scenario() {
     },
     Table.EXPAND_COLUMN,
     {
-      title: "Title",
+      title: (
+        <span className="scenario-table-title">
+          Title{" "}
+          <DeleteFilled
+            className={selected.length > 0 ? "scen-icondel-active" : ""}
+            onClick={handleDelete}
+          />
+        </span>
+      ),
       dataIndex: "_id",
       with: "15%",
       render: (id) => {
@@ -93,6 +100,10 @@ export default function Scenario() {
       },
     },
   ];
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
   return (
     <div className="scenario">
       <Topbar icon={icon} title="シナリオの設定" />
@@ -118,6 +129,7 @@ export default function Scenario() {
                 <p>新しいシナリオを作成する</p>
               </button>
               <Tables
+                setSelected={setSelected}
                 columns={columns}
                 data={data}
                 pageSize={10}

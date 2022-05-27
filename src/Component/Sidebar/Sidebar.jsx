@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Sidebar.css";
 import Logo from "../Logo/Logo";
 import { Avatar } from "antd";
@@ -15,6 +15,7 @@ import {
 import toggle from "../../Svg/sidebar/toggle.svg";
 import SidebarItem from "../SidebarItem/SidebarItem";
 import { toast } from "react-toastify";
+import AuthContext from "../../auth-context";
 
 export default function Sidebar() {
   const [show, setShow] = useState(false);
@@ -23,9 +24,10 @@ export default function Sidebar() {
   const location = useLocation().pathname;
   console.log(location)
   const navigate = useNavigate();
+  const auth = useContext(AuthContext);
   const handleLogout = () => {
     localStorage.setItem("token", "")
-    navigate("/");
+    auth.logout();
     toast.success("Logout success")
   };
 

@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import Login from "./Page/Login/Login";
 import Home from "./Page/Home/Home";
 import Profile from "./Page/Profile/Profile";
@@ -16,18 +16,30 @@ import GraphLine from "./Page/Aggregation/Graph/GraphLine/GraphLine";
 import GraphColum from "./Page/Aggregation/Graph/GraphColumn/GraphColum";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
-
+import { useState } from "react";
+import withAuth from "./HOC/ProtectedRoutes"
+import AuthContext from "./auth-context";
 
 function App() {
   const queryClient = new QueryClient();
+  const [authenticated, setauthenticated] = useState(localStorage.getItem("token"));
+  const login = () => {
+    console.log(authenticated)
+    setauthenticated(true);
+  };
+  const logout = () => {
+    setauthenticated(false);
+  }
+  const HomeWithAuth = withAuth(Home)
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={{ status: authenticated, login: login, logout: logout }}>
       <div className="app">
         <ToastContainer/>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/home" element={<Home />}>
+            <Route path="/" element={<Login/>} />
+            <Route path="/home" element={<HomeWithAuth/>}>
               <Route path="profile" element={<Profile />} />
               <Route path="upload" element={<Upload />} />
               <Route path="chatbox-setting" element={<ChatboxSetting />} />
@@ -47,6 +59,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </div>
+      </AuthContext.Provider>
     </QueryClientProvider>
   );
 }

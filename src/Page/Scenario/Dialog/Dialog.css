@@ -8,6 +8,7 @@
     border-radius: 8px;
     overflow: hidden;
     align-items: center;
+    width: 720px !important;
 }
 
 .scenario-dilog .ant-modal-title {

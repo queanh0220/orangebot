@@ -15,41 +15,59 @@ import {
 } from "@ant-design/icons";
 import axiosCustom from "../../Api/axiosCustom";
 import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 export default function Marketing() {
-  const [data, setData] = useState([
-    // { stt: "テーマ①", status: "無効", date: "2022/02/25", content: "" },
-  ]);
+
   const [create, setCreate] = useState(false);
   const [active, setActive] = useState({});
   const [content, setContent] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
   const getData = () => {
-    axiosCustom.get("/posts").then((res) => {
+    return axiosCustom.get("/posts").then((res) => {
       console.log("post",res.data);
-      setData(res.data);
+      return res.data;
     });
   };
 
   const createData = (data) => {
     axiosCustom.post("/posts", data).then(() => {
-      getData();
       toast.success("create success!");
     });
   };
   const updateData = (id, data) => {
     axiosCustom.put("/posts/" + id, data).then(() => {
-      getData();
       toast.success("update success!");
     });
   };
 
   const deleteData = (id) => {
     axiosCustom.delete("/posts/" + id).then(() => {
-      getData()
       toast.success("delete success!");
     });
   };
+
+  const queryClient = useQueryClient();
+  const {data} = useQuery('get-posts', getData, {
+    placeholderData: []
+  })
+
+  const mutationUpdate = useMutation(updateData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-posts");
+    },
+  });
+  const mutationCreate = useMutation(createData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-posts");
+    },
+  });
+
+  const mutationDelete = useMutation(deleteData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-posts");
+    },
+  });
 
   const handleCreate = () => {
     console.log(1);
@@ -62,12 +80,12 @@ export default function Marketing() {
     if (isEdit) {
       active.content = content;
       const {_id, ...data} = active;
-      updateData(_id, data);
+      mutationUpdate.mutate(_id, data);
       setCreate(false);
       return;
     }
     const today = new Date();
-    createData({
+    mutationCreate.mutate({
       status: "無効",
       date:
         today.getFullYear() +
@@ -87,7 +105,7 @@ export default function Marketing() {
   const handlePost = (item) => {
     item.status === "有効" ? (item.status = "無効") : (item.status = "有効");
     const {_id, ...data} = item;
-    updateData(_id, data);
+    mutationUpdate.mutate(_id, data);
   };
 
   const handleActive = (item) => {
@@ -96,23 +114,24 @@ export default function Marketing() {
   };
 
   const handleDelete = () => {
-    deleteData(active._id)
+    mutationDelete.mutate(active._id)
     setIsEdit(false);
     setCreate(false);
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
+useEffect(() => {
+  console.log(data);
+},[data])
   return (
     <div className="marketing">
+      {(()=>{console.log("data",data)})()}
       <Topbar icon={icon} title="投稿の設定" />
       <div className="main">
         <div className="marketing-content">
           <div className="marketing-left bg-item">
             <div className="marketing-left-list">
-              {data.length === 0 ? (
+              {
+              data.length === 0 ? (
                 <div className="marketing-empty">
                   <img src={emptyImg} alt="" />
                   <p className="color-g">

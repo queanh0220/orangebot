@@ -30,3 +30,13 @@
     float: none;
 }
 
+.scen-icondel-active {
+    color: red !important;
+}
+
+.scenario-table-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+

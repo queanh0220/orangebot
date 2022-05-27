@@ -3,7 +3,7 @@ import './ScenarioTable.css'
 export default function ScenarioTable(props) {
 
   return (
-    <table className="dialog-table">
+    <table className="dialog-table scenario-table">
       <tr>
         <th>No</th>
         <th>メッセージ</th>
@@ -51,8 +51,12 @@ export default function ScenarioTable(props) {
                           <div className="table-option" key={index}>
                             <label htmlFor="">オプション1</label>
                             <div className="table-input">
-                              {option}
-    
+                             
+                              <input
+                                type="text"
+                                value={option}
+                                readOnly={true}
+                              />
                    
                             </div>
                             
@@ -65,15 +69,25 @@ export default function ScenarioTable(props) {
                       <div className="table-option">
                         <label htmlFor="">開始日</label>
                         <div className="table-input">
-                          {item.control.data.Datapicker.stime}
+                        <input
+                            className="table-input-date"
+                            type="date"
+                            readOnly={true}
+                            value={item.control.data.Datapicker.stime}
+                        
+                          />
                          
                         </div>
                       </div>
                       <div className="table-option">
                         <label htmlFor="">終了日</label>
                         <div className="table-input">
-                        
+                        <input
+                            className="table-input-date"
+                            type="date"
+                            readOnly={true}
                             value={item.control.data.Datapicker.etime}
+                          />
                           
                         </div>
                       </div>

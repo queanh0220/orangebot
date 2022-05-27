@@ -1,12 +1,13 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Input } from "antd";
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect, useRef, useEffect, useContext } from "react";
 import "./Login.css";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../Component/Logo/Logo";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from '../../Component/Loading/Loading'
+import AuthContext from "../../auth-context";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -14,7 +15,10 @@ export default function Login() {
   const [errUsername, setErrUsername] = useState("");
   const [errPassword, setErrPassword] = useState("");
   const [isLoading, setIsLoading] = useState('');
-  const navigate = useNavigate();
+  const search = useLocation().search;
+  const [err, setErr] = useState((new URLSearchParams(search)).get('error'));
+  const auth = useContext(AuthContext)
+  console.log(auth.status);
   const checknull = () => {
     let ck = false;
     if (!username) {
@@ -36,11 +40,13 @@ export default function Login() {
     await axios
       .post(process.env.REACT_APP_API_URL+"users/login", { username, password })
       .then((res) => {
+        console.log("login", auth.status)
         localStorage.setItem("token", res.headers.token);
-        navigate("/home/profile");
+        auth.login();
         toast.success("Login success")
       })
       .catch((err) => {
+        console.log(err);
         if (err.response.data === "wrong password") {
           setErrPassword("パスワードが正しくありません!");
         } else {
@@ -50,6 +56,17 @@ export default function Login() {
       });
     setIsLoading(false);
   };
+
+  useEffect(()=>{
+    console.log(err);
+    if(err) {
+      toast.error(err);
+      setErr("");
+    }
+  },[])
+  if(auth.status) {
+    return <Navigate to="/home/profile" replace />
+  }
   return (
     <div className="login">
       {isLoading && <Loading />}

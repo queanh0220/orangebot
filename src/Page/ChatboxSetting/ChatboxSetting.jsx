@@ -8,7 +8,6 @@ import {
   CopyOutlined,
   MinusOutlined,
   SaveOutlined,
-  SendOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 import UpImg from "../../Component/UpImg/UpImg";
@@ -17,6 +16,7 @@ import ChatboxInput from "./ChatboxInput/ChatboxInput";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { chatboxDefault } from "../../data";
+import { uploadFile } from "../../Api/uploadFile";
 export default function ChatboxSetting() {
 
   const [imgFile, setImgFile] = useState('');
@@ -35,10 +35,14 @@ export default function ChatboxSetting() {
       })
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const token = localStorage.getItem('token');
     const {_id, ...data} = chatbox;
     console.log(data);
+    if(imgFile) {
+      const upImg = await uploadFile(imgFile);
+      data.img = upImg.data;
+    }
     axios.put(process.env.REACT_APP_API_URL + "chatboxs/", data,  {
       headers: { Authorization: token },
     }).then(() => {
@@ -47,6 +51,10 @@ export default function ChatboxSetting() {
     .catch(err => {
       console.log(err)
     })
+  }
+
+  const handleSetDefault = () => {
+    setChatbox(chatboxDefault);
   }
 
   useEffect(() => {
@@ -85,7 +93,7 @@ export default function ChatboxSetting() {
                 </div>
               </div>
               <div className="chatboxSetting-title-content">
-                <UpImg className="chatboxSetting-img" img={chatbox.img} setImgFIle={setImgFile}/>
+                <UpImg className="chatboxSetting-img" img={chatbox.img} setImgFile={setImgFile}/>
 
                 <div className="chatboxSetting-box-content">
                   <p>文書</p>
@@ -242,7 +250,7 @@ export default function ChatboxSetting() {
             </div>
           </div>
           <div className="chatboxSetting-buttons">
-            <button className="chatboxSetting-setting-btn button">
+            <button className="chatboxSetting-setting-btn button" onClick={handleSetDefault}>
               <SettingOutlined />
               <p>デフォルトに戻す</p>
             </button>
