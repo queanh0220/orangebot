@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactLoading from "react-loading";
-import './Loading.css';
-export default function Loading() {
-  return (
+import "./Loading.css";
+export default function Loading(props) {
+  return props.loading ? (
     <div className="loading-component">
       <ReactLoading
         type={"spin"}
@@ -12,5 +12,5 @@ export default function Loading() {
         className="loading-icon"
       />
     </div>
-  );
+  ) : null;
 }

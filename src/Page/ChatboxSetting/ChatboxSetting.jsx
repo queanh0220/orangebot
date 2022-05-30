@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./ChatboxSetting.css";
 import icon from "../../Svg/chatboxsetting.svg";
 import Topbar from "../../Component/Topbar/Topbar";
-import iconButton from "../../Svg/chatbox/tag.svg";
 import sendicon from "../../Svg/chatbox/send.svg";
 import {
   CopyOutlined,
@@ -13,44 +12,44 @@ import {
 import UpImg from "../../Component/UpImg/UpImg";
 import ChatboxButton from "./ChatboxButton/ChatboxButton";
 import ChatboxInput from "./ChatboxInput/ChatboxInput";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { chatboxDefault } from "../../data";
 import { uploadFile } from "../../Api/uploadFile";
+import axiosCustom from "../../Api/axiosCustom";
+import Loading from "../../Component/Loading/Loading";
 export default function ChatboxSetting() {
 
   const [imgFile, setImgFile] = useState('');
-
+  const [img, setImg] = useState('');
   const [chatbox, setChatbox] = useState(chatboxDefault);
+  const [loading, setLoading] = useState(false);
 
   const url = '<script src="https://localhost:8443/chatbot/forLP.js" charset="UTF-8" tenant-id="cc88883ebffbe99bfda924c637edd315" url-page-counter="google.com"></script>';
   const getData = () => {
-    const token = localStorage.getItem('token')
-    axios
-      .get(process.env.REACT_APP_API_URL + "chatboxs/", {
-        headers: { Authorization: token },
-      })
+    axiosCustom
+      .get("chatboxs/")
       .then(res => {
-        setChatbox({...chatbox, ...res.data})
+        setChatbox({...chatbox, ...res.data});
+        setImg(res.data.img);
       })
   }
 
   const handleSave = async () => {
-    const token = localStorage.getItem('token');
     const {_id, ...data} = chatbox;
+    setLoading(true);
     console.log(data);
     if(imgFile) {
-      const upImg = await uploadFile(imgFile);
+      const upImg = await uploadFile(imgFile, data.img);
       data.img = upImg.data;
     }
-    axios.put(process.env.REACT_APP_API_URL + "chatboxs/", data,  {
-      headers: { Authorization: token },
-    }).then(() => {
+    await axiosCustom.put("chatboxs/", data).then(() => {
       toast.success("Update success");
+      getData();
     })
     .catch(err => {
       console.log(err)
     })
+    setLoading(false);
   }
 
   const handleSetDefault = () => {
@@ -63,6 +62,7 @@ export default function ChatboxSetting() {
 
   return (
     <div className="chatboxSetting">
+      <Loading loading={loading} />
       <Topbar icon={icon} title="チャットボットUIの設定" />
       <div className="main">
         <div className="chatboxSetting-content">
@@ -93,7 +93,7 @@ export default function ChatboxSetting() {
                 </div>
               </div>
               <div className="chatboxSetting-title-content">
-                <UpImg className="chatboxSetting-img" img={chatbox.img} setImgFile={setImgFile}/>
+                <UpImg className="chatboxSetting-img" img={chatbox.img} setImgFile={setImgFile} setImg={setImg}/>
 
                 <div className="chatboxSetting-box-content">
                   <p>文書</p>
@@ -209,7 +209,7 @@ export default function ChatboxSetting() {
               className="chatboxSetting-right-head"
               style={{ background: chatbox.headBgColor }}
             >
-              <img src={chatbox.img} alt="" />
+              <img src={img} alt="" />
               <div className="chatboxSetting-right-text">
                 <h3 style={{ color: chatbox.titleColor }}>{chatbox.title}</h3>
                 <p style={{ color: chatbox.headTextColor }}>{chatbox.headText}</p>
@@ -243,7 +243,7 @@ export default function ChatboxSetting() {
               }
             </p>
             <div className="chatboxSetting-bottom-input">
-              <input type="text" className="input-text" value={url} />
+              <input type="text" className="input-text" value={url} readOnly={true}/>
               <button className="button">
                 <CopyOutlined />
               </button>

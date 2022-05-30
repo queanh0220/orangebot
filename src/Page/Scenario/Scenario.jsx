@@ -45,7 +45,7 @@ export default function Scenario() {
       render: (name) => {
         return (
           <>
-            <img src={name.icon} alt="" />
+            <img src={name.icon} alt="" className="scenario-table-icon"/>
             <span>{name.text}</span>
           </>
         );

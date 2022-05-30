@@ -23,3 +23,11 @@
 .up-img label:hover {
     filter: brightness(90%);
 }
+
+.up-img-labeladd {
+    height: 100%;
+}
+
+.up-img-labeladd svg {
+    height: 100%;
+}

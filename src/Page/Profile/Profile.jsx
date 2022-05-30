@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Topbar from "../../Component/Topbar/Topbar";
 import "./Profile.css";
 import person from "../../Svg/person.svg";
@@ -6,10 +6,10 @@ import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import UpImg from "../../Component/UpImg/UpImg";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosCustom from "../../Api/axiosCustom";
 import { uploadFile } from "../../Api/uploadFile";
+import Loading from "../../Component/Loading/Loading";
 export default function Profile() {
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
@@ -25,15 +25,11 @@ export default function Profile() {
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isEditEmail, setIsEditEmail] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+
 
   const getInfo = () => {
-    // return axios
-    // .get(process.env.REACT_APP_API_URL + "users/", {
-    //   headers: { Authorization: token },
-    // })
     return axiosCustom
       .get("/users")
       .then((res) => {
@@ -41,28 +37,33 @@ export default function Profile() {
         setEditInfo({ ...editInfo, ...data });
         return { ...editInfo, ...data };
       })
-      .catch((err) => {
-        toast.error(err.message);
-        console.log("err", err);
-      });
   };
-
+  useEffect(() => {
+    if(imgFile && !isEditInfo) {
+      setIsEditInfo(true);
+    }
+  },[imgFile])
   const updateInfo = async (data) => {
+    // loading.setLoading(true)
+    setLoading(true)
     if (imgFile) {
-      const imgRes = await uploadFile(imgFile);
+      const imgRes = await uploadFile(imgFile, data.img);
       data.img = imgRes.data;
     }
     console.log("updateInfo", data);
-    return axios
-      .put(process.env.REACT_APP_API_URL + "users/", data, {
-        headers: { Authorization: token },
-      })
-      .then((res) => {
-        toast.success("update success!");
-      });
+    const result = await axios
+    .put(process.env.REACT_APP_API_URL + "users/", data, {
+      headers: { Authorization: token },
+    })
+    .then((res) => {
+      toast.success("update success!");
+    });
+    setLoading(false)
+    return result;
   };
 
   const updatePassword = (data) => {
+    setLoading(true)
     return axios
       .put(process.env.REACT_APP_API_URL + "users/password/", data, {
         headers: { Authorization: token },
@@ -70,16 +71,18 @@ export default function Profile() {
       .then((res) => {
         toast.success("update success!");
         setIsEditPassword(false);
+        setLoading(false)
       })
       .catch((err) => {
         setErrPassword(err.response.data);
+        setLoading(false)
       });
   };
 
   const queryClient = useQueryClient();
-  const { data, isSuccess } = useQuery("get-profile", getInfo, {
-    initialData: {},
-  });
+
+  const { data, isSuccess } = useQuery("get-profile", getInfo);
+
   const mutation = useMutation(updateInfo, {
     onSuccess: () => {
       queryClient.invalidateQueries("get-profile");
@@ -119,15 +122,18 @@ export default function Profile() {
   useEffect(() => {
     console.log("data", data);
   }, [data]);
+
+
   return (
     <div className="profile">
+      <Loading loading={loading}/>
       <Topbar icon={person} title="プロファイル" />
       <div className="main">
         <div className="profile-content">
           <div className="profile-left bg-item">
             <UpImg
               className="profile-left-img"
-              img={data.img ?? ""}
+              img={isSuccess ? data.img:''}
               setImgFile={setImgFile}
             />
 
@@ -154,8 +160,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="profile-left-info">
-                  <p>{data.name}</p>
-                  <p> {data.birthday}</p>
+                  <p>{isSuccess?data.name:""}</p>
+                  <p> {isSuccess?data.birthday:""}</p>
                 </div>
               )}
             </div>

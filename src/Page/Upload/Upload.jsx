@@ -3,7 +3,6 @@ import "./Upload.css";
 import pinIcon from "../../Svg/pin.svg";
 import Topbar from "../../Component/Topbar/Topbar";
 import {
-  CloseOutlined,
   DeleteFilled,
   FileFilled,
   FileZipFilled,
@@ -13,17 +12,18 @@ import {
 } from "@ant-design/icons";
 import { Table } from "antd";
 import storeIcon from "../../Svg/store.svg";
-import { files } from "../../data";
 import axios from "axios";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { dateToString, formatDate, timeSince } from "../../Utils/formatDate";
+import { dateToString, timeSince } from "../../Utils/formatDate";
 import { formatBytes } from "../../Utils/formatBytes";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { uploadFile } from "../../Api/uploadFile";
+import Loading from "../../Component/Loading/Loading";
+import { toast } from "react-toastify";
 
 export default function Upload() {
   const store = 60;
-
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState([]);
   const getData = () => {
     return axios.get(process.env.REACT_APP_API_URL+"files").then((res) => {
       let sizeDoc = 0,
@@ -56,18 +56,26 @@ export default function Upload() {
     });
   };
 
-  const upload = (data) => {
-    return axios.post(process.env.REACT_APP_API_URL+"files", data);
+  const upload = async(data) => {
+    const result = await axios.post(process.env.REACT_APP_API_URL+"files", data);
+    setLoading(false)
+    toast.success('upload file success');
+    return result;
   };
 
-  const deleteFile = (id) => {
-    return axios.delete(process.env.REACT_APP_API_URL+"files/" + id);
+  const deleteFile = async (listId) => {
+    setLoading(true)
+    const result = await axios.delete(process.env.REACT_APP_API_URL+"files/", {data: listId});
+    setLoading(false)
+    toast.success("delete success")
+    return result;
   };
   
-  const { data, isLoading } = useQuery("get-files", getData, {initialData: []});
+  const { data, isLoading } = useQuery("get-files", getData);
   useEffect(() => {
     console.log("data",data)
   },[data])
+
   const queryClient = useQueryClient();
   
   const mutationUpdate = useMutation(upload, {
@@ -153,29 +161,26 @@ export default function Upload() {
       },
     },
     {
-      title: <DeleteFilled className="upload-icon" />,
-      dataIndex: "_id",
-      render: (id) => {
-        return (
-          <div className="upload-delete-icon">
-          <CloseOutlined
+      title: <DeleteFilled className={"upload-icon "+(selected.length > 0 ? "active": "")} onClick={()=>mutationDelete.mutate(selected)}/>,
+      dataIndex: "",
+      // render: (id) => {
+      //   return (
+      //     <div className="upload-delete-icon">
+      //     <CloseOutlined
         
-            onClick={() => mutationDelete.mutate(id)}
-          />
-          </div>
-        );
-      },
+      //       onClick={() => mutationDelete.mutate(id)}
+      //     />
+      //     </div>
+      //   );
+      // },
       width: "16px",
     },
   ];
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+      setSelected(selectedRowKeys)
+      console.log(selectedRowKeys);
     },
     getCheckboxProps: (record) => ({
       disabled: record.name === "Disabled User",
@@ -209,6 +214,7 @@ export default function Upload() {
   };
 
   const handleUpload = async (e) => {
+    setLoading(true)
     const file = e.target.files[0];
     console.log(file);
     let result = await uploadFile(file);
@@ -238,6 +244,7 @@ export default function Upload() {
 
   return (
     <div className="upload">
+      <Loading loading={loading}/>
       <Topbar icon={pinIcon} title="添付" button={uploadButton} />
       <div className="main">
           <div className="upload-content">
@@ -247,7 +254,7 @@ export default function Upload() {
                   <FileFilled className="upload-top-icon" />
                 </div>
                 <div className="upload-top-text">
-                  <h2>{data.sizeDoc}</h2>
+                  <h2>{!isLoading && data.sizeDoc}</h2>
                   <p>ドキュメント</p>
                 </div>
               </div>
@@ -256,7 +263,7 @@ export default function Upload() {
                   <PictureFilled className="upload-top-icon" />
                 </div>
                 <div className="upload-top-text">
-                  <h2>{data.sizeImg}</h2>
+                  <h2>{!isLoading && data.sizeImg}</h2>
                   <p>ドキュメント</p>
                 </div>
               </div>
@@ -265,7 +272,7 @@ export default function Upload() {
                   <PlaySquareFilled className="upload-top-icon" />
                 </div>
                 <div className="upload-top-text">
-                  <h2>{data.sizeVideo}</h2>
+                  <h2>{!isLoading && data.sizeVideo}</h2>
                   <p>ドキュメント</p>
                 </div>
               </div>
@@ -274,7 +281,7 @@ export default function Upload() {
                   <FileZipFilled className="upload-top-icon" />
                 </div>
                 <div className="upload-top-text">
-                  <h2>{data.sizeZip}</h2>
+                  <h2>{!isLoading && data.sizeZip}</h2>
                   <p>ドキュメント</p>
                 </div>
               </div>
@@ -295,7 +302,7 @@ export default function Upload() {
               <Table
                 rowSelection={rowSelection}
                 columns={columns}
-                dataSource={data.files}
+                dataSource={!isLoading && data.files}
                 rowKey={(record) => record["_id"]}
                 pagination={{ pageSize: 5 }}
                 loading={isLoading}

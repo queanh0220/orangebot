@@ -15,18 +15,30 @@ import {
 import toggle from "../../Svg/sidebar/toggle.svg";
 import SidebarItem from "../SidebarItem/SidebarItem";
 import { toast } from "react-toastify";
-import AuthContext from "../../auth-context";
+import AuthContext from "../../ContextApi/auth-context";
+import { useQuery } from "react-query";
+import axiosCustom from "../../Api/axiosCustom";
 
 export default function Sidebar() {
   const [show, setShow] = useState(false);
   const [showmenu, setShowmenu] = useState(true);
   const [curMenu, setCurMenu] = useState("aggregation/scenario")
   const location = useLocation().pathname;
+
+  const getInfo = () => {
+    return axiosCustom
+      .get("/users")
+      .then((res) => {
+        const { _id, password, ...data } = res.data;
+        return { ...data };
+      })
+  };
+
+  const {data} = useQuery("get-profile", getInfo)
   console.log(location)
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const handleLogout = () => {
-    localStorage.setItem("token", "")
     auth.logout();
     toast.success("Logout success")
   };
@@ -111,8 +123,8 @@ export default function Sidebar() {
         </SidebarItem>
       </div>
       <div className="sidebar-footer sidebar-item">
-        <Avatar src="https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg" />
-        <span className={"side-item-text " + (show ? "" : "hidden")}>添付</span>
+        <Avatar src={data? data.img : "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg"} />
+        <span className={"side-item-text " + (show ? "" : "hidden")}>{data? data.name:"添付"}</span>
         {show && (
           <LogoutOutlined className={"sidebar-logout"} onClick={handleLogout} />
         )}

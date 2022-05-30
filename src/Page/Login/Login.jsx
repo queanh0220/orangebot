@@ -7,7 +7,7 @@ import Logo from "../../Component/Logo/Logo";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from '../../Component/Loading/Loading'
-import AuthContext from "../../auth-context";
+import AuthContext from "../../ContextApi/auth-context";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -69,7 +69,7 @@ export default function Login() {
   }
   return (
     <div className="login">
-      {isLoading && <Loading />}
+      <Loading loading={isLoading}/>
       <Logo className="login-logo" show={true} />
       <form className="login-form" action="#" method="POST">
         <h2>ログイン</h2>

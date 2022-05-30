@@ -122,6 +122,9 @@ export default function Marketing() {
 useEffect(() => {
   console.log(data);
 },[data])
+useEffect(()=> {
+  console.log("mkt");
+})
   return (
     <div className="marketing">
       {(()=>{console.log("data",data)})()}

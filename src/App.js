@@ -18,7 +18,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
 import withAuth from "./HOC/ProtectedRoutes"
-import AuthContext from "./auth-context";
+import AuthContext from "./ContextApi/auth-context";
 
 function App() {
   const queryClient = new QueryClient();
@@ -28,6 +28,7 @@ function App() {
     setauthenticated(true);
   };
   const logout = () => {
+    localStorage.setItem("token", "");
     setauthenticated(false);
   }
   const HomeWithAuth = withAuth(Home)
