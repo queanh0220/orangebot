@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Topbar from "../../Component/Topbar/Topbar";
 import "./Scenario.css";
 import icon from "../../Svg/scenario.svg";
@@ -11,29 +11,34 @@ import ScenarioTable from "./ScenarioTable/ScenarioTable";
 import axiosCustom from "../../Api/axiosCustom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { dateToString } from "../../Utils/formatDate";
+import { LoadingContext } from "../../ContextApi/context-api";
 export default function Scenario() {
   const getData = () => {
     return axiosCustom.get("/scenarios").then((res) => res.data);
   };
-  const { data } = useQuery("get-scenarios", getData, {
-    initialData: [],
-  });
+  const { data , isLoading} = useQuery("get-scenarios", getData, {initialData: []});
   const [showDialog, setShowDialog] = useState(false);
   const [selected, setSelected] = useState([]);
+  const loading = useContext(LoadingContext);
 
-  const deleteScens = (data) => {
-    console.log(data);
-    return axios.delete(process.env.REACT_APP_API_URL+'scenarios',  {data: data}).then(()=>{toast.success('delete success')})
-  }
+  const deleteScens = async (data) => {
+    loading.setLoading(true);
+    const result = await axiosCustom
+      .delete("scenarios", { data: data })
+      .then(() => {
+        toast.success("delete success");
+      });
+    loading.setLoading(false);
+    return result;
+  };
 
-  const queryClient =  useQueryClient();
+  const queryClient = useQueryClient();
   const mutation = useMutation(deleteScens, {
     onSuccess: () => {
       queryClient.invalidateQueries("get-scenarios");
     },
-  })
+  });
   const handleDelete = () => {
     mutation.mutate(selected);
   };
@@ -45,7 +50,7 @@ export default function Scenario() {
       render: (name) => {
         return (
           <>
-            <img src={name.icon} alt="" className="scenario-table-icon"/>
+            <img src={name.icon} alt="" className="scenario-table-icon" />
             <span>{name.text}</span>
           </>
         );
@@ -61,8 +66,8 @@ export default function Scenario() {
       dataIndex: "date",
       width: "15%",
       render: (date) => {
-        return dateToString(new Date(date))
-      }
+        return dateToString(new Date(date));
+      },
     },
     {
       title: "タグ",
@@ -145,6 +150,7 @@ export default function Scenario() {
                     ></input>
                   ),
                 }}
+                loading={isLoading}
               />
             </>
           )}

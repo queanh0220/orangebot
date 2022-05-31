@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Topbar from "../../Component/Topbar/Topbar";
 import "./Marketing.css";
 import icon from "../../Svg/marketing.svg";
@@ -16,12 +16,14 @@ import {
 import axiosCustom from "../../Api/axiosCustom";
 import { toast } from "react-toastify";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { LoadingContext } from "../../ContextApi/context-api";
 export default function Marketing() {
 
   const [create, setCreate] = useState(false);
   const [active, setActive] = useState({});
   const [content, setContent] = useState("");
   const [isEdit, setIsEdit] = useState(false);
+  const loading = useContext(LoadingContext);
 
   const getData = () => {
     return axiosCustom.get("/posts").then((res) => {
@@ -30,21 +32,32 @@ export default function Marketing() {
     });
   };
 
-  const createData = (data) => {
-    axiosCustom.post("/posts", data).then(() => {
+  const createData = async (data) => {
+    loading.setLoading(true)
+    const result = await axiosCustom.post("/posts", data).then(() => {
       toast.success("create success!");
     });
+    loading.setLoading(false)
+    return result;
   };
-  const updateData = (id, data) => {
-    axiosCustom.put("/posts/" + id, data).then(() => {
+  const updateData = async (post) => {
+    loading.setLoading(true)
+    const {_id, ...data} = post;
+    console.log("item", _id, data);
+    const result = await axiosCustom.put("/posts/" + _id, data).then(() => {
       toast.success("update success!");
     });
+    loading.setLoading(false)
+    return result;
   };
 
-  const deleteData = (id) => {
-    axiosCustom.delete("/posts/" + id).then(() => {
+  const deleteData = async (id) => {
+    loading.setLoading(true)
+    const result = await axiosCustom.delete("/posts/" + id).then(() => {
       toast.success("delete success!");
     });
+    loading.setLoading(false)
+    return result;
   };
 
   const queryClient = useQueryClient();
@@ -79,8 +92,7 @@ export default function Marketing() {
   const handleSave = () => {
     if (isEdit) {
       active.content = content;
-      const {_id, ...data} = active;
-      mutationUpdate.mutate(_id, data);
+      mutationUpdate.mutate(active);
       setCreate(false);
       return;
     }
@@ -104,8 +116,7 @@ export default function Marketing() {
 
   const handlePost = (item) => {
     item.status === "有効" ? (item.status = "無効") : (item.status = "有効");
-    const {_id, ...data} = item;
-    mutationUpdate.mutate(_id, data);
+    mutationUpdate.mutate( item);
   };
 
   const handleActive = (item) => {

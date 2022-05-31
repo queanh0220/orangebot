@@ -17,49 +17,56 @@ import GraphColum from "./Page/Aggregation/Graph/GraphColumn/GraphColum";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
-import withAuth from "./HOC/ProtectedRoutes"
-import AuthContext from "./ContextApi/auth-context";
+import withAuth from "./HOC/ProtectedRoutes";
+import { AuthContext } from "./ContextApi/context-api";
+import LoadingContextComp from "./ContextApi/LoadingContextComp";
 
 function App() {
   const queryClient = new QueryClient();
-  const [authenticated, setauthenticated] = useState(localStorage.getItem("token"));
+  const [authenticated, setauthenticated] = useState(
+    localStorage.getItem("token")
+  );
   const login = () => {
-    console.log(authenticated)
+    console.log(authenticated);
     setauthenticated(true);
   };
   const logout = () => {
     localStorage.setItem("token", "");
     setauthenticated(false);
-  }
-  const HomeWithAuth = withAuth(Home)
+  };
+  const HomeWithAuth = withAuth(Home);
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthContext.Provider value={{ status: authenticated, login: login, logout: logout }}>
-      <div className="app">
-        <ToastContainer/>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Login/>} />
-            <Route path="/home" element={<HomeWithAuth/>}>
-              <Route path="profile" element={<Profile />} />
-              <Route path="upload" element={<Upload />} />
-              <Route path="chatbox-setting" element={<ChatboxSetting />} />
-              <Route path="marketing" element={<Marketing />} />
-              <Route path="scenario" element={<Scenario />} />
-              <Route path="aggregation/scenario" element={<AgScenario />} />
-              <Route path="aggregation/dialogue" element={<Dialogue />} />
-              <Route path="aggregation/graph" element={<Graph />}>
-                <Route path="table" element={<GraphTable />} />
-                <Route path="bar" element={<GraphBar />} />
-                <Route path="line" element={<GraphLine />} />
-                <Route path="column" element={<GraphColum />} />
-                <Route path="*" element={<GraphBar />} />
-              </Route>
-              <Route path="*" element={<Scenario />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </div>
+      <AuthContext.Provider
+        value={{ status: authenticated, login: login, logout: logout }}
+      >
+        <div className="app">
+          <LoadingContextComp>
+            <ToastContainer />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/home" element={<HomeWithAuth />}>
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="upload" element={<Upload />} />
+                  <Route path="chatbox-setting" element={<ChatboxSetting />} />
+                  <Route path="marketing" element={<Marketing />} />
+                  <Route path="scenario" element={<Scenario />} />
+                  <Route path="aggregation/scenario" element={<AgScenario />} />
+                  <Route path="aggregation/dialogue" element={<Dialogue />} />
+                  <Route path="aggregation/graph" element={<Graph />}>
+                    <Route path="table" element={<GraphTable />} />
+                    <Route path="bar" element={<GraphBar />} />
+                    <Route path="line" element={<GraphLine />} />
+                    <Route path="column" element={<GraphColum />} />
+                    <Route path="*" element={<GraphBar />} />
+                  </Route>
+                  <Route path="*" element={<Scenario />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </LoadingContextComp>
+        </div>
       </AuthContext.Provider>
     </QueryClientProvider>
   );

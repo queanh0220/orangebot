@@ -6,15 +6,14 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../Component/Logo/Logo";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Loading from '../../Component/Loading/Loading'
-import AuthContext from "../../ContextApi/auth-context";
+import { AuthContext, LoadingContext } from "../../ContextApi/context-api";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errUsername, setErrUsername] = useState("");
   const [errPassword, setErrPassword] = useState("");
-  const [isLoading, setIsLoading] = useState('');
+  const loading = useContext(LoadingContext);
   const search = useLocation().search;
   const [err, setErr] = useState((new URLSearchParams(search)).get('error'));
   const auth = useContext(AuthContext)
@@ -36,7 +35,7 @@ export default function Login() {
   const handleSubmit = async(e) => {
     e.preventDefault();
     if (checknull()) return;
-    setIsLoading(true);
+    loading.setLoading(true);
     await axios
       .post(process.env.REACT_APP_API_URL+"users/login", { username, password })
       .then((res) => {
@@ -54,7 +53,7 @@ export default function Login() {
         }
         console.log("err", err.response.data);
       });
-    setIsLoading(false);
+    loading.setLoading(false);
   };
 
   useEffect(()=>{
@@ -69,7 +68,6 @@ export default function Login() {
   }
   return (
     <div className="login">
-      <Loading loading={isLoading}/>
       <Logo className="login-logo" show={true} />
       <form className="login-form" action="#" method="POST">
         <h2>ログイン</h2>

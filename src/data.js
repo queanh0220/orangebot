@@ -219,6 +219,8 @@ export const chatboxDefault = {
   inputSize: 14,
 };
 
+
+
 const scenarios = [
   {
     _id: "abc123",

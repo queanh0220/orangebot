@@ -15,9 +15,9 @@ import {
 import toggle from "../../Svg/sidebar/toggle.svg";
 import SidebarItem from "../SidebarItem/SidebarItem";
 import { toast } from "react-toastify";
-import AuthContext from "../../ContextApi/auth-context";
 import { useQuery } from "react-query";
 import axiosCustom from "../../Api/axiosCustom";
+import { AuthContext } from "../../ContextApi/context-api";
 
 export default function Sidebar() {
   const [show, setShow] = useState(false);

@@ -9,74 +9,72 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import axiosCustom from "../../Api/axiosCustom";
 import { uploadFile } from "../../Api/uploadFile";
-import Loading from "../../Component/Loading/Loading";
+import { LoadingContext } from "../../ContextApi/context-api";
 export default function Profile() {
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
     birthday: "1985-06-13",
-    img: "",
+    img: "https://i.pinimg.com/originals/24/3f/e4/243fe4fa4293f1cb878d9dce142785a0.jpg",
     email: "",
   });
   const [imgFile, setImgFile] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [cfPassword, setCfPassword] = useState("");
-  const [errPassword, setErrPassword] = useState("");
+  const [errAccount, setErrAccount] = useState("");
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isEditEmail, setIsEditEmail] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
-
+  const loading = useContext(LoadingContext)
 
   const getInfo = () => {
     return axiosCustom
       .get("/users")
       .then((res) => {
         const { _id, password, ...data } = res.data;
-        setEditInfo({ ...editInfo, ...data });
         return { ...editInfo, ...data };
       })
   };
-  useEffect(() => {
-    if(imgFile && !isEditInfo) {
-      setIsEditInfo(true);
-    }
-  },[imgFile])
   const updateInfo = async (data) => {
     // loading.setLoading(true)
-    setLoading(true)
+    loading.setLoading(true)
     if (imgFile) {
       const imgRes = await uploadFile(imgFile, data.img);
       data.img = imgRes.data;
     }
     console.log("updateInfo", data);
-    const result = await axios
-    .put(process.env.REACT_APP_API_URL + "users/", data, {
-      headers: { Authorization: token },
-    })
+    const result = await axiosCustom
+    .put("users/", data)
     .then((res) => {
       toast.success("update success!");
+
+      setIsEditEmail(false);
+    }).catch(err => {
+      setErrAccount(err.response.data.email);
+      console.log("err update", err.response);
     });
-    setLoading(false)
+    loading.setLoading(false)
     return result;
   };
 
   const updatePassword = (data) => {
-    setLoading(true)
-    return axios
+    loading.setLoading(true)
+    const result =  axios
       .put(process.env.REACT_APP_API_URL + "users/password/", data, {
         headers: { Authorization: token },
       })
       .then((res) => {
         toast.success("update success!");
         setIsEditPassword(false);
-        setLoading(false)
       })
       .catch((err) => {
-        setErrPassword(err.response.data);
-        setLoading(false)
+        console.log("err pass", err);
+        setErrAccount(err.response.data.newPassword || err.response.data.confirmPassword);
       });
+      loading.setLoading(false);
+      return result;
   };
 
   const queryClient = useQueryClient();
@@ -99,34 +97,42 @@ export default function Profile() {
     setIsEditInfo(false);
   };
 
-  const checkpassword = () => {
-    if (newPassword !== cfPassword) {
-      setErrPassword("new password and confirm password do not match!");
-      return false;
-    }
-    return true;
-  };
+  // const checkpassword = () => {
+  //   if (newPassword !== cfPassword) {
+  //     setErrAccount("new password and confirm password do not match!");
+  //     return false;
+  //   }
+  //   return true;
+  // };
 
   const handleEditAccount = () => {
-    if (isEditPassword) {
-      if (checkpassword()) {
-        mutationPassword.mutate({ oldPassword, newPassword });
-      }
-    } else {
-      mutation.mutate(editInfo);
+    if (isEditPassword) {     
+        mutationPassword.mutate({ oldPassword, newPassword , confirmPassword: cfPassword});
     }
 
-    setIsEditEmail(false);
+    if(isEditEmail) {
+      mutation.mutate(editInfo);
+    }
   };
 
   useEffect(() => {
     console.log("data", data);
+    setEditInfo({ ...editInfo, ...data });
   }, [data]);
 
+  useEffect(() => {
+    if(imgFile && !isEditInfo) {
+      setIsEditInfo(true);
+    }
+  },[imgFile])
+
+  useEffect(() => {
+    console.log("first");
+  },[])
 
   return (
     <div className="profile">
-      <Loading loading={loading}/>
+      {/* <Loading loading={loading}/> */}
       <Topbar icon={person} title="プロファイル" />
       <div className="main">
         <div className="profile-content">
@@ -249,7 +255,7 @@ export default function Profile() {
             </div>
             {(isEditPassword || isEditEmail) && (
               <div className="profile-btn profile-btn-right">
-                <span className="input-err">{errPassword}</span>
+                <span className="input-err">{errAccount}</span>
                 <div>
                   <span
                     className="profile-cancel-edit"

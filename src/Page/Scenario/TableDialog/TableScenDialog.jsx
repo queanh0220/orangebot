@@ -1,12 +1,11 @@
 import {
   CloseCircleFilled,
-  CloseCircleOutlined,
   DeleteFilled,
   PlusCircleFilled,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Radio } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { formatNumdigits } from "../../../Utils/formatNumber";
 import "./TableDialog.css";
 export default function TableScenDialog(props) {
   const insertTable = (index) => {
@@ -48,8 +47,8 @@ export default function TableScenDialog(props) {
     props.setTable([...props.table]);
   };
 
-  const handleChangeTextOption = (item, index, e) => {
-    item[index] = e.target.value;
+  const handleChangeTextOption = (item, index, text) => {
+    item[index] = text;
     props.setTable([...props.table]);
   };
 
@@ -79,7 +78,7 @@ export default function TableScenDialog(props) {
         return (
           <>
             <tr>
-              <td rowspan="2">01</td>
+              <td rowspan="2">{formatNumdigits(index+1, 2)}</td>
               <td rowspan="2" className="table-mess">
                 <input
                   type="text"
@@ -165,11 +164,17 @@ export default function TableScenDialog(props) {
                                   handleChangeTextOption(
                                     item.control.data[item.control.label],
                                     index,
-                                    e
+                                    e.target.value
                                   )
                                 }
                               />
-                              <CloseCircleFilled className="table-input-icon" />
+                              <CloseCircleFilled className="table-input-icon" onClick={() =>
+                                  handleChangeTextOption(
+                                    item.control.data[item.control.label],
+                                    index,
+                                    ""
+                                  )
+                                }/>
                             </div>
                             <PlusCircleOutlined
                               style={{ color: "#52C41A" }}

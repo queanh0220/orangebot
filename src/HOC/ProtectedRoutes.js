@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import AuthContext from '../ContextApi/auth-context'
+import { AuthContext } from '../ContextApi/context-api'
+
 
 const withAuth = (WrappedComponent) => {
     return function ProtectedRoutes(props) {

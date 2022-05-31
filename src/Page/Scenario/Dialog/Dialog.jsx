@@ -1,12 +1,12 @@
 import { Modal, Select, Tag } from "antd";
 import { Option } from "antd/lib/mentions";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import axiosCustom from "../../../Api/axiosCustom";
 import { uploadFile } from "../../../Api/uploadFile";
-import Loading from "../../../Component/Loading/Loading";
 import UpImg from "../../../Component/UpImg/UpImg";
+import { LoadingContext } from "../../../ContextApi/context-api";
 import dialogIcon from "../../../Svg/plus-puple.svg";
 import TableScenDialog from "../TableDialog/TableScenDialog";
 import "./Dialog.css";
@@ -32,10 +32,10 @@ export default function Dialog(props) {
       cv: false,
     },
   ]);
-  const [loading, setLoading] = useState(false);
+  const loading = useContext(LoadingContext);
 
   const createScen = async (data) => {
-    setLoading(true);
+    loading.setLoading(true);
     if (imgFile) {
       const upImg = await uploadFile(imgFile);
       data.name.icon = upImg.data;
@@ -43,7 +43,7 @@ export default function Dialog(props) {
     const result = await axiosCustom.post("/scenarios", data).then(() => {
       toast.success("create scenario success");
     });
-    setLoading(false);
+    loading.setLoading(false);
     props.setShow(false);
     return result;
   };
@@ -101,7 +101,6 @@ export default function Dialog(props) {
 
   return (
     <>
-      <Loading loading={loading} />
       <Modal
         className="scenario-dilog"
         title={

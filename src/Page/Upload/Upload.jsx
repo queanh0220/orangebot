@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Upload.css";
 import pinIcon from "../../Svg/pin.svg";
 import Topbar from "../../Component/Topbar/Topbar";
@@ -12,20 +12,20 @@ import {
 } from "@ant-design/icons";
 import { Table } from "antd";
 import storeIcon from "../../Svg/store.svg";
-import axios from "axios";
 import { dateToString, timeSince } from "../../Utils/formatDate";
 import { formatBytes } from "../../Utils/formatBytes";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { uploadFile } from "../../Api/uploadFile";
-import Loading from "../../Component/Loading/Loading";
 import { toast } from "react-toastify";
+import { LoadingContext } from "../../ContextApi/context-api";
+import axiosCustom from "../../Api/axiosCustom";
 
 export default function Upload() {
   const store = 60;
-  const [loading, setLoading] = useState(false);
+  const loading = useContext(LoadingContext)
   const [selected, setSelected] = useState([]);
   const getData = () => {
-    return axios.get(process.env.REACT_APP_API_URL+"files").then((res) => {
+    return axiosCustom.get("files").then((res) => {
       let sizeDoc = 0,
         sizeVideo = 0,
         sizeZip = 0,
@@ -57,16 +57,16 @@ export default function Upload() {
   };
 
   const upload = async(data) => {
-    const result = await axios.post(process.env.REACT_APP_API_URL+"files", data);
-    setLoading(false)
+    const result = await axiosCustom.post("files", data);
+    loading.setLoading(false)
     toast.success('upload file success');
     return result;
   };
 
   const deleteFile = async (listId) => {
-    setLoading(true)
-    const result = await axios.delete(process.env.REACT_APP_API_URL+"files/", {data: listId});
-    setLoading(false)
+    loading.setLoading(true)
+    const result = await axiosCustom.delete("files/", {data: listId});
+    loading.setLoading(false)
     toast.success("delete success")
     return result;
   };
@@ -214,7 +214,7 @@ export default function Upload() {
   };
 
   const handleUpload = async (e) => {
-    setLoading(true)
+    loading.setLoading(true)
     const file = e.target.files[0];
     console.log(file);
     let result = await uploadFile(file);
@@ -244,7 +244,7 @@ export default function Upload() {
 
   return (
     <div className="upload">
-      <Loading loading={loading}/>
+   
       <Topbar icon={pinIcon} title="添付" button={uploadButton} />
       <div className="main">
           <div className="upload-content">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./ChatboxSetting.css";
 import icon from "../../Svg/chatboxsetting.svg";
 import Topbar from "../../Component/Topbar/Topbar";
@@ -16,13 +16,13 @@ import { toast } from "react-toastify";
 import { chatboxDefault } from "../../data";
 import { uploadFile } from "../../Api/uploadFile";
 import axiosCustom from "../../Api/axiosCustom";
-import Loading from "../../Component/Loading/Loading";
+import { LoadingContext } from "../../ContextApi/context-api";
 export default function ChatboxSetting() {
 
   const [imgFile, setImgFile] = useState('');
   const [img, setImg] = useState('');
   const [chatbox, setChatbox] = useState(chatboxDefault);
-  const [loading, setLoading] = useState(false);
+  const loading = useContext(LoadingContext)
 
   const url = '<script src="https://localhost:8443/chatbot/forLP.js" charset="UTF-8" tenant-id="cc88883ebffbe99bfda924c637edd315" url-page-counter="google.com"></script>';
   const getData = () => {
@@ -36,7 +36,7 @@ export default function ChatboxSetting() {
 
   const handleSave = async () => {
     const {_id, ...data} = chatbox;
-    setLoading(true);
+    loading.setLoading(true);
     console.log(data);
     if(imgFile) {
       const upImg = await uploadFile(imgFile, data.img);
@@ -49,7 +49,7 @@ export default function ChatboxSetting() {
     .catch(err => {
       console.log(err)
     })
-    setLoading(false);
+    loading.setLoading(false);
   }
 
   const handleSetDefault = () => {
@@ -62,7 +62,6 @@ export default function ChatboxSetting() {
 
   return (
     <div className="chatboxSetting">
-      <Loading loading={loading} />
       <Topbar icon={icon} title="チャットボットUIの設定" />
       <div className="main">
         <div className="chatboxSetting-content">
