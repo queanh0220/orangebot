@@ -15,13 +15,13 @@ import { dateToString } from "../../Utils/formatDate";
 import { LoadingContext } from "../../ContextApi/context-api";
 export default function Scenario() {
   const getData = () => {
-    return axiosCustom.get("/scenarios").then((res) => res.data);
+    return axiosCustom.get("/scenarios").then(res=>res.data);
   };
-  const { data , isLoading} = useQuery("get-scenarios", getData, {initialData: []});
+  const { data , isLoading, isFetching } = useQuery("get-scenarios", getData);
   const [showDialog, setShowDialog] = useState(false);
   const [selected, setSelected] = useState([]);
   const loading = useContext(LoadingContext);
-
+  console.log("loading", isLoading , isFetching, data);
   const deleteScens = async (data) => {
     loading.setLoading(true);
     const result = await axiosCustom
@@ -114,7 +114,7 @@ export default function Scenario() {
       <Topbar icon={icon} title="シナリオの設定" />
       <div className="main">
         <div className="scenario-content bg-item">
-          {data.length === 0 ? (
+          {data && data.length === 0 ? (
             <>
               <div className="senario-empty">
                 <img src={emptyImg} alt="" />

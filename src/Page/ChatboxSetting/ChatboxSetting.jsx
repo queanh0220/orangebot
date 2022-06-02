@@ -18,47 +18,58 @@ import { uploadFile } from "../../Api/uploadFile";
 import axiosCustom from "../../Api/axiosCustom";
 import { LoadingContext } from "../../ContextApi/context-api";
 export default function ChatboxSetting() {
-
-  const [imgFile, setImgFile] = useState('');
-  const [img, setImg] = useState('');
+  const [imgFile, setImgFile] = useState("");
+  const [img, setImg] = useState("");
   const [chatbox, setChatbox] = useState(chatboxDefault);
-  const loading = useContext(LoadingContext)
+  const [isCopied, setIsCopied] = useState(false);
+  const loading = useContext(LoadingContext);
 
-  const url = '<script src="https://localhost:8443/chatbot/forLP.js" charset="UTF-8" tenant-id="cc88883ebffbe99bfda924c637edd315" url-page-counter="google.com"></script>';
+  const url =
+    '<script src="https://localhost:8443/chatbot/forLP.js" charset="UTF-8" tenant-id="cc88883ebffbe99bfda924c637edd315" url-page-counter="google.com"></script>';
   const getData = () => {
-    axiosCustom
-      .get("chatboxs/")
-      .then(res => {
-        setChatbox({...chatbox, ...res.data});
-        setImg(res.data.img);
-      })
-  }
+    axiosCustom.get("chatboxs/").then((res) => {
+      setChatbox({ ...chatbox, ...res.data });
+      setImg(res.data.img);
+    });
+  };
 
   const handleSave = async () => {
-    const {_id, ...data} = chatbox;
+    const { _id, ...data } = chatbox;
     loading.setLoading(true);
     console.log(data);
-    if(imgFile) {
+    if (imgFile) {
       const upImg = await uploadFile(imgFile, data.img);
       data.img = upImg.data;
     }
-    await axiosCustom.put("chatboxs/", data).then(() => {
-      toast.success("Update success");
-      getData();
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    await axiosCustom
+      .put("chatboxs/", data)
+      .then(() => {
+        toast.success("Update success");
+        getData();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     loading.setLoading(false);
-  }
+  };
 
   const handleSetDefault = () => {
     setChatbox(chatboxDefault);
-  }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(url);
+    if (!isCopied) {
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 500);
+    }
+  };
 
   useEffect(() => {
-    getData()
-  },[])
+    getData();
+  }, []);
 
   return (
     <div className="chatboxSetting">
@@ -92,7 +103,12 @@ export default function ChatboxSetting() {
                 </div>
               </div>
               <div className="chatboxSetting-title-content">
-                <UpImg className="chatboxSetting-img" img={chatbox.img} setImgFile={setImgFile} setImg={setImg}/>
+                <UpImg
+                  className="chatboxSetting-img"
+                  img={chatbox.img}
+                  setImgFile={setImgFile}
+                  setImg={setImg}
+                />
 
                 <div className="chatboxSetting-box-content">
                   <p>文書</p>
@@ -211,7 +227,9 @@ export default function ChatboxSetting() {
               <img src={img} alt="" />
               <div className="chatboxSetting-right-text">
                 <h3 style={{ color: chatbox.titleColor }}>{chatbox.title}</h3>
-                <p style={{ color: chatbox.headTextColor }}>{chatbox.headText}</p>
+                <p style={{ color: chatbox.headTextColor }}>
+                  {chatbox.headText}
+                </p>
               </div>
               <button>
                 <MinusOutlined style={{ color: chatbox.iconColor }} />
@@ -242,19 +260,35 @@ export default function ChatboxSetting() {
               }
             </p>
             <div className="chatboxSetting-bottom-input">
-              <input type="text" className="input-text" value={url} readOnly={true}/>
-              <button className="button">
-                <CopyOutlined />
-              </button>
+              <input
+                type="text"
+                className="input-text"
+                value={url}
+                readOnly={true}
+              />
+              <div className="chatboxSetting-copy-btn">
+                <button className="button" onClick={handleCopy}>
+                  <CopyOutlined />
+                </button>
+                {isCopied && (
+                <div className="chatboxSetting-copy-mess">Copied!</div>
+                )}
+              </div>
             </div>
           </div>
           <div className="chatboxSetting-buttons">
-            <button className="chatboxSetting-setting-btn button" onClick={handleSetDefault}>
+            <button
+              className="chatboxSetting-setting-btn button"
+              onClick={handleSetDefault}
+            >
               <SettingOutlined />
               <p>デフォルトに戻す</p>
             </button>
             <span className="chatboxSetting-cancel-btn">元に戻す</span>
-            <button className="chatboxSetting-save-btn button" onClick={handleSave}>
+            <button
+              className="chatboxSetting-save-btn button"
+              onClick={handleSave}
+            >
               <SaveOutlined />
               <p>保存する</p>
             </button>

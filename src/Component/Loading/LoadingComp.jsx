@@ -1,8 +1,8 @@
 import React from 'react'
-
-export default function LoadingComp(props) {
-    return props.loading ? (
-      <div className="loading-component">
+import ReactLoading from "react-loading";
+export default function LoadingComp() {
+    return (
+      <div className="loading-comp">
         <ReactLoading
           type={"spinningBubbles"}
           color={"#FA8C16"}
@@ -11,5 +11,5 @@ export default function LoadingComp(props) {
           className="loading-icon"
         />
       </div>
-    ) : null;
+    )
   }

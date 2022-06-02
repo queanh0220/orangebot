@@ -28,6 +28,7 @@ export default function Tables(props) {
       rowKey={(record) => record["_id"]}
       pagination={{ pageSize: props.pageSize }}
       expandable={props.expandable}
+      loading={props.loading}
     />
   );
 }

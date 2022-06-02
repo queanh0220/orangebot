@@ -10,6 +10,9 @@ import { toast } from "react-toastify";
 import axiosCustom from "../../Api/axiosCustom";
 import { uploadFile } from "../../Api/uploadFile";
 import { LoadingContext } from "../../ContextApi/context-api";
+import { useForm } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { profileSchema } from "../../Utils/validateSchema";
 export default function Profile() {
   const [editInfo, setEditInfo] = useState({
     name: "本田 圭佑",
@@ -27,41 +30,49 @@ export default function Profile() {
   const [isEditEmail, setIsEditEmail] = useState(false);
   // const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
-  const loading = useContext(LoadingContext)
+  const loading = useContext(LoadingContext);
+
+  const {
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
+    register,
+  } = useForm({
+    resolver: joiResolver(profileSchema),
+    mode: "onChange",
+  });
 
   const getInfo = () => {
-    return axiosCustom
-      .get("/users")
-      .then((res) => {
-        const { _id, password, ...data } = res.data;
-        return { ...editInfo, ...data };
-      })
+    return axiosCustom.get("/users").then((res) => {
+      const { _id, password, ...data } = res.data;
+      return { ...editInfo, ...data };
+    });
   };
   const updateInfo = async (data) => {
     // loading.setLoading(true)
-    loading.setLoading(true)
+    loading.setLoading(true);
     if (imgFile) {
       const imgRes = await uploadFile(imgFile, data.img);
       data.img = imgRes.data;
     }
     console.log("updateInfo", data);
     const result = await axiosCustom
-    .put("users/", data)
-    .then((res) => {
-      toast.success("update success!");
+      .put("users/", data)
+      .then((res) => {
+        toast.success("update success!");
 
-      setIsEditEmail(false);
-    }).catch(err => {
-      setErrAccount(err.response.data.email);
-      console.log("err update", err.response);
-    });
-    loading.setLoading(false)
+        setIsEditEmail(false);
+      })
+      .catch((err) => {
+        setErrAccount(err.response.data.email);
+        console.log("err update", err.response);
+      });
+    loading.setLoading(false);
     return result;
   };
 
   const updatePassword = (data) => {
-    loading.setLoading(true)
-    const result =  axios
+    loading.setLoading(true);
+    const result = axios
       .put(process.env.REACT_APP_API_URL + "users/password/", data, {
         headers: { Authorization: token },
       })
@@ -71,10 +82,12 @@ export default function Profile() {
       })
       .catch((err) => {
         console.log("err pass", err);
-        setErrAccount(err.response.data.newPassword || err.response.data.confirmPassword);
+        setErrAccount(
+          err.response.data.newPassword || err.response.data.confirmPassword
+        );
       });
-      loading.setLoading(false);
-      return result;
+    loading.setLoading(false);
+    return result;
   };
 
   const queryClient = useQueryClient();
@@ -106,11 +119,15 @@ export default function Profile() {
   // };
 
   const handleEditAccount = () => {
-    if (isEditPassword) {     
-        mutationPassword.mutate({ oldPassword, newPassword , confirmPassword: cfPassword});
+    if (isEditPassword) {
+      mutationPassword.mutate({
+        oldPassword,
+        newPassword,
+        confirmPassword: cfPassword,
+      });
     }
 
-    if(isEditEmail) {
+    if (isEditEmail) {
       mutation.mutate(editInfo);
     }
   };
@@ -121,14 +138,22 @@ export default function Profile() {
   }, [data]);
 
   useEffect(() => {
-    if(imgFile && !isEditInfo) {
+    if (imgFile && !isEditInfo) {
       setIsEditInfo(true);
     }
-  },[imgFile])
+  }, [imgFile]);
 
   useEffect(() => {
-    console.log("first");
-  },[])
+    setErrAccount(
+      errors.email
+        ? errors.email.message
+        : errors.newPassword
+        ? errors.newPassword.message
+        : errors[""]
+        ? errors[""].message
+        : ""
+    );
+  }, [errors]);
 
   return (
     <div className="profile">
@@ -139,7 +164,7 @@ export default function Profile() {
           <div className="profile-left bg-item">
             <UpImg
               className="profile-left-img"
-              img={isSuccess ? data.img:''}
+              img={isSuccess ? data.img : ""}
               setImgFile={setImgFile}
             />
 
@@ -150,6 +175,7 @@ export default function Profile() {
                     type="text"
                     placeholder="本田 圭佑"
                     className="input-text"
+                    {...register("name")}
                     value={editInfo.name}
                     onChange={(e) =>
                       setEditInfo({ ...editInfo, name: e.target.value })
@@ -159,6 +185,7 @@ export default function Profile() {
                     type="date"
                     className="input-text"
                     value={editInfo.birthday}
+                    {...register("birthday")}
                     onChange={(e) =>
                       setEditInfo({ ...editInfo, birthday: e.target.value })
                     }
@@ -166,8 +193,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="profile-left-info">
-                  <p>{isSuccess?data.name:""}</p>
-                  <p> {isSuccess?data.birthday:""}</p>
+                  <p>{isSuccess ? data.name : ""}</p>
+                  <p> {isSuccess ? data.birthday : ""}</p>
                 </div>
               )}
             </div>
@@ -181,7 +208,7 @@ export default function Profile() {
                 </span>
               )}
               {isEditInfo ? (
-                <button onClick={handleEditInfo}>
+                <button onClick={handleSubmit(handleEditInfo)}>
                   <SaveOutlined />
                   <span className="profile-btn-text">編集</span>
                 </button>
@@ -202,6 +229,7 @@ export default function Profile() {
                   type="text"
                   placeholder="example"
                   className="input-text"
+                  {...register("email")}
                   readOnly={!isEditEmail}
                   value={editInfo.email}
                   onChange={(e) =>
@@ -223,6 +251,7 @@ export default function Profile() {
                   type="password"
                   placeholder="......"
                   className="input-text"
+                  {...register("oldPassword")}
                   readOnly={!isEditPassword}
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
@@ -240,6 +269,7 @@ export default function Profile() {
                     type="password"
                     placeholder="......"
                     className="input-text"
+                    {...register("newPassword")}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
@@ -247,6 +277,7 @@ export default function Profile() {
                     type="password"
                     placeholder="......"
                     className="input-text"
+                    {...register("confirmPassword")}
                     value={cfPassword}
                     onChange={(e) => setCfPassword(e.target.value)}
                   />
@@ -267,7 +298,7 @@ export default function Profile() {
                     キャンセル
                   </span>
 
-                  <button onClick={handleEditAccount}>
+                  <button onClick={handleSubmit(handleEditAccount)}>
                     <SaveOutlined />
                     <span className="profile-btn-text">編集</span>
                   </button>

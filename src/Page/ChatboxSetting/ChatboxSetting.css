@@ -158,10 +158,38 @@
     padding: 4px 8px;
 }
 
+.chatboxSetting-copy-btn {
+    position: relative;
+}
+
 .chatboxSetting-bottom-input button {
     padding: 0 14px;
     min-width: fit-content;
     border-radius: 50%;
+    height: 100%;
+}
+
+.chatboxSetting-copy-mess {
+    position: absolute;
+    color: black;
+    background-color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    box-shadow: 0px 0px 10px -1px #00000060;
+}
+
+.chatboxSetting-copy-mess::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 10px solid white;
 }
 
 .chatboxSetting-buttons {

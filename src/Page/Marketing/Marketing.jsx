@@ -17,8 +17,8 @@ import axiosCustom from "../../Api/axiosCustom";
 import { toast } from "react-toastify";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { LoadingContext } from "../../ContextApi/context-api";
+import LoadingComp from "../../Component/Loading/LoadingComp";
 export default function Marketing() {
-
   const [create, setCreate] = useState(false);
   const [active, setActive] = useState({});
   const [content, setContent] = useState("");
@@ -27,43 +27,41 @@ export default function Marketing() {
 
   const getData = () => {
     return axiosCustom.get("/posts").then((res) => {
-      console.log("post",res.data);
+      console.log("post", res.data);
       return res.data;
     });
   };
 
   const createData = async (data) => {
-    loading.setLoading(true)
+    loading.setLoading(true);
     const result = await axiosCustom.post("/posts", data).then(() => {
       toast.success("create success!");
     });
-    loading.setLoading(false)
+    loading.setLoading(false);
     return result;
   };
   const updateData = async (post) => {
-    loading.setLoading(true)
-    const {_id, ...data} = post;
+    loading.setLoading(true);
+    const { _id, ...data } = post;
     console.log("item", _id, data);
     const result = await axiosCustom.put("/posts/" + _id, data).then(() => {
       toast.success("update success!");
     });
-    loading.setLoading(false)
+    loading.setLoading(false);
     return result;
   };
 
   const deleteData = async (id) => {
-    loading.setLoading(true)
+    loading.setLoading(true);
     const result = await axiosCustom.delete("/posts/" + id).then(() => {
       toast.success("delete success!");
     });
-    loading.setLoading(false)
+    loading.setLoading(false);
     return result;
   };
 
   const queryClient = useQueryClient();
-  const {data} = useQuery('get-posts', getData, {
-    placeholderData: []
-  })
+  const { data, isLoading } = useQuery("get-posts", getData);
 
   const mutationUpdate = useMutation(updateData, {
     onSuccess: () => {
@@ -106,7 +104,7 @@ export default function Marketing() {
         "/" +
         today.getDate(),
       content: content,
-    })
+    });
     setCreate(false);
   };
 
@@ -116,7 +114,7 @@ export default function Marketing() {
 
   const handlePost = (item) => {
     item.status === "有効" ? (item.status = "無効") : (item.status = "有効");
-    mutationUpdate.mutate( item);
+    mutationUpdate.mutate(item);
   };
 
   const handleActive = (item) => {
@@ -125,27 +123,30 @@ export default function Marketing() {
   };
 
   const handleDelete = () => {
-    mutationDelete.mutate(active._id)
+    mutationDelete.mutate(active._id);
     setIsEdit(false);
     setCreate(false);
   };
 
-useEffect(() => {
-  console.log(data);
-},[data])
-useEffect(()=> {
-  console.log("mkt");
-})
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+  useEffect(() => {
+    console.log("mkt");
+  });
   return (
     <div className="marketing">
-      {(()=>{console.log("data",data)})()}
+      {(() => {
+        console.log("data", data);
+      })()}
       <Topbar icon={icon} title="投稿の設定" />
       <div className="main">
         <div className="marketing-content">
           <div className="marketing-left bg-item">
             <div className="marketing-left-list">
-              {
-              data.length === 0 ? (
+              {isLoading ? (
+                <LoadingComp />
+              ) : (data.length === 0 ? (
                 <div className="marketing-empty">
                   <img src={emptyImg} alt="" />
                   <p className="color-g">
@@ -185,7 +186,7 @@ useEffect(()=> {
                     );
                   })}
                 </div>
-              )}
+              ))}
             </div>
             <button className="button" onClick={handleCreate}>
               <PlusCircleOutlined />

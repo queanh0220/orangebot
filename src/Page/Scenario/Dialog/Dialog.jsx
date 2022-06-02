@@ -91,7 +91,7 @@ export default function Dialog(props) {
       tags.pop();
       setTag([...tags]);
       setInputTag(" ");
-    } else if (/.+\s$/.test(str)) {
+    } else if (/\s+\S+\s$/.test(str)) {
       tags.push(str.replace(/ /g, ""));
       setInputTag(" ");
     } else {
