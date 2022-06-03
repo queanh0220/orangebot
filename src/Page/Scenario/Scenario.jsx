@@ -43,6 +43,11 @@ export default function Scenario() {
     mutation.mutate(selected);
   };
 
+
+  const handleEdit = (id) => {
+    setShowDialog(data.find(item => item._id === id))
+  }
+
   const columns = [
     {
       title: "シナリオ名",
@@ -99,7 +104,7 @@ export default function Scenario() {
       render: (id) => {
         return (
           <label htmlFor={id}>
-            <a>Edit</a>
+            <a onClick={()=>handleEdit(id)}>Edit</a>
           </label>
         );
       },
@@ -121,7 +126,7 @@ export default function Scenario() {
                 <p className="color-g">
                   まだ投稿はありません。 今すぐ投稿を作成しましょう！
                 </p>
-                <button className="button" onClick={() => setShowDialog(true)}>
+                <button className="button" onClick={() => setShowDialog({})}>
                   <PlusCircleFilled />
                   <p>新しいシナリオを作成する</p>
                 </button>
@@ -129,7 +134,7 @@ export default function Scenario() {
             </>
           ) : (
             <>
-              <button className="button" onClick={() => setShowDialog(true)}>
+              <button className="button" onClick={() => setShowDialog({})}>
                 <PlusCircleFilled />
                 <p>新しいシナリオを作成する</p>
               </button>
@@ -149,6 +154,14 @@ export default function Scenario() {
                       style={{ display: "none" }}
                     ></input>
                   ),
+                }}
+                expandRowByClick={true}
+                onRow={(record) => {
+                  return {
+                    onClick: (e) => {
+                      console.log(record)
+                    }
+                  }
                 }}
                 loading={isLoading}
               />

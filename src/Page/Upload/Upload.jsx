@@ -9,6 +9,7 @@ import {
   PictureFilled,
   PlaySquareFilled,
   UploadOutlined,
+  VerticalAlignBottomOutlined,
 } from "@ant-design/icons";
 import { Table } from "antd";
 import storeIcon from "../../Svg/store.svg";
@@ -163,16 +164,13 @@ export default function Upload() {
     {
       title: <DeleteFilled className={"upload-icon "+(selected.length > 0 ? "active": "")} onClick={()=>mutationDelete.mutate(selected)}/>,
       dataIndex: "",
-      // render: (id) => {
-      //   return (
-      //     <div className="upload-delete-icon">
-      //     <CloseOutlined
-        
-      //       onClick={() => mutationDelete.mutate(id)}
-      //     />
-      //     </div>
-      //   );
-      // },
+      render: () => {
+        return (
+          <div className="upload-delete-icon">
+          <VerticalAlignBottomOutlined/>
+          </div>
+        );
+      },
       width: "16px",
     },
   ];
@@ -306,6 +304,12 @@ export default function Upload() {
                 rowKey={(record) => record["_id"]}
                 pagination={{ pageSize: 5 }}
                 loading={isLoading}
+                onRow={(record) => {
+                  return {onClick: event => {
+                    console.log(record)
+                    window.open(record.link, '_blank', 'noopener,noreferrer');
+                  }}
+                }}
               />
             </div>
           </div>

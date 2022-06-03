@@ -34,6 +34,16 @@ export default function Dialog(props) {
   ]);
   const loading = useContext(LoadingContext);
 
+  useEffect(() => {
+    if (props.show._id) {
+      setName(props.show.name.text);
+      setTag(props.show.tags);
+      setImg(props.show.name.icon);
+      setTable(props.show.table);
+      setInputTag(" ");
+    }
+  }, [props.show]);
+
   const createScen = async (data) => {
     loading.setLoading(true);
     if (imgFile) {
@@ -44,11 +54,34 @@ export default function Dialog(props) {
       toast.success("create scenario success");
     });
     loading.setLoading(false);
-    props.setShow(false);
     return result;
   };
+
+  const updateScen = async (data) => {
+    loading.setLoading(true);
+    if (imgFile) {
+      const upImg = await uploadFile(imgFile);
+      data.name.icon = upImg.data;
+    }
+    const { id, ...newData } = data;
+    const result = await axiosCustom
+      .put("/scenarios/" + id, newData)
+      .then(() => {
+        toast.success("update scenario success");
+      });
+
+    loading.setLoading(false);
+    return result;
+  };
+
   const queryClient = useQueryClient();
   const mutation = useMutation(createScen, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-scenarios");
+    },
+  });
+
+  const mutationUpdate = useMutation(updateScen, {
     onSuccess: () => {
       queryClient.invalidateQueries("get-scenarios");
     },
@@ -57,7 +90,7 @@ export default function Dialog(props) {
   const handleClose = () => props.setShow(false);
   const handleOk = async () => {
     //save info
-    mutation.mutate({
+    const data = {
       name: {
         icon: img,
         text: name,
@@ -65,7 +98,17 @@ export default function Dialog(props) {
       date: new Date(),
       tags,
       table,
-    });
+    };
+    if (props.show._id) {
+      mutationUpdate.mutate({ id: props.show._id, ...data });
+    } else {
+      mutation.mutate(data);
+    }
+    setName("");
+    setTag([]);
+    setInputTag("");
+    setImg("");
+    setImgFile("");
     setTable([
       {
         message: "",
@@ -82,7 +125,7 @@ export default function Dialog(props) {
         cv: false,
       },
     ]);
-    
+    props.setShow(false);
   };
 
   const handleChangeTag = (e) => {

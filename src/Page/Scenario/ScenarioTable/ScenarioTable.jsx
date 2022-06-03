@@ -1,9 +1,11 @@
 import React from 'react'
+import { useMutation } from 'react-query'
 import './ScenarioTable.css'
 export default function ScenarioTable(props) {
 
+
   return (
-    <table className="dialog-table scenario-table">
+    <table className="dialog-table scenarioTable">
       <tr>
         <th>No</th>
         <th>メッセージ</th>
@@ -36,7 +38,7 @@ export default function ScenarioTable(props) {
               </td>
               <td rowspan="2">
                 <div className="table-CVpoint">
-                  <input type="radio" className="table-radio" checked={item.cv} onChange={()=>{}}/>
+                  <input type="radio" className="table-radio" checked={item.cv}/>
                 </div>
               </td>
             </tr>

@@ -2,10 +2,15 @@
     text-align: center !important;
 }
 
-.scenario-table label {
+.scenarioTable {
+    margin-top: 0px;
+    margin-bottom: 16px;
+}
+
+.scenarioTable label {
     margin-right: 20px !important;
 }
 
-.scenario-table .dialog-table input {
+.scenarioTable .dialog-table input {
     background-color: #fafafa7d !important;
 }
